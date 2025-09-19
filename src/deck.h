@@ -9,8 +9,10 @@ public:
 	Deck(std::string name);
 	Deck(std::string name, std::vector<Card>&& cards);
 
+	std::string getName() const;
+
 	void addCard(Card&& c);
-	Card getCardAt(size_t idx);
+	Card getCardAt(size_t idx) const;
 
 	size_t size();
 
