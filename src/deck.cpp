@@ -1,15 +1,15 @@
 #include "deck.h"
 #include "card.h"
 
-Deck::Deck(std::string name)
+Deck::Deck(QString name)
 	: name(name)
 {}
 
-Deck::Deck(std::string name, std::vector<Card>&& cards)
+Deck::Deck(QString name, std::vector<Card>&& cards)
 	: name(name), cards(std::move(cards))
 {}
 
-std::string Deck::getName() const {
+QString Deck::getName() const {
 	return name;
 }
 

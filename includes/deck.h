@@ -2,14 +2,15 @@
 #define DECK_H
 
 #include <vector>
+#include <QString>
 #include "card.h"
 
 class Deck{
 public:
-	Deck(std::string name);
-	Deck(std::string name, std::vector<Card>&& cards);
+	Deck(QString name);
+	Deck(QString name, std::vector<Card>&& cards);
 
-	std::string getName() const;
+	QString getName() const;
 
 	void addCard(Card&& c);
 	Card getCardAt(size_t idx) const;
@@ -18,7 +19,7 @@ public:
 
 private:
 	std::vector<Card> cards;
-	std::string name;
+	QString name;
 };
 
 #endif //DECK_H

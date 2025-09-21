@@ -1,13 +1,13 @@
 #include "card.h"
 
-Card::Card(std::string question, std::string answer)
+Card::Card(QString question, QString answer)
 	: question(std::move(question)), answer(std::move(answer))
 {}
 
-std::string Card::getQuestion(){
+QString Card::getQuestion(){
 	return question;
 }
 
-std::string Card::getAnswer(){
+QString Card::getAnswer(){
 	return answer;
 }

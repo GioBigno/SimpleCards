@@ -26,11 +26,11 @@ signals:
 
 private:
 
-	std::vector<std::unique_ptr<QFile>> decksFiles;
+	std::vector<QString> decksFiles;
 	QStringList m_availableDecks;
 
-	std::vector<std::unique_ptr<QFile>> getDecksFiles() const;
-	QJsonDocument getJsonDoc(QFile& jsonFile) const;
+	std::vector<QString> getDecksFiles() const;
+	QJsonDocument getJsonDoc(const QString& jsonFilename) const;
 	Deck getDeck(QJsonDocument jsonDoc) const;
 
 	void debug_printDeck(Deck d) const;

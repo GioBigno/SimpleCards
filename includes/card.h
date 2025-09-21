@@ -1,18 +1,18 @@
 #ifndef CARD_H
 #define CARD_H
 
-#include <string>
+#include <QString>
 
 class Card{
 public:
-	Card(std::string question, std::string answer);
+	Card(QString question, QString answer);
 
-	std::string getQuestion();
-	std::string getAnswer();
+	QString getQuestion();
+	QString getAnswer();
 
 private:
-	std::string question;
-	std::string answer;
+	QString question;
+	QString answer;
 };
 
 #endif //CARD_H
