@@ -20,6 +20,17 @@ qt_add_qml_module(simplecards
 		src/deckmanager.cpp
 	QML_FILES
 		qml/Main.qml
+		qml/DecksList.qml
+		qml/DecksListView.qml
+		qml/TestingView.qml
+		qml/Card.qml
+	RESOURCES
+		assets/SpaceMono-Regular.ttf
+		assets/SpaceMono-Bold.ttf
+		assets/SpaceMono-Italic.ttf
+		assets/play.svg
+		assets/stats.svg
+		assets/edit.svg
 )
 
 target_include_directories(simplecards

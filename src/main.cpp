@@ -11,7 +11,7 @@
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QtLogging>
-
+#include <QFontDatabase>
 #include <QtQml/qqmlregistration.h>
 
 #include "card.h"
@@ -25,6 +25,10 @@ int main(int argc, char *argv[])
 	QCoreApplication::setApplicationName("SimpleCards");
 	QCoreApplication::setApplicationVersion("1.0");	
 	QGuiApplication app(argc, argv);
+
+	QFontDatabase::addApplicationFont(":/qt/qml/simplecardsModule/assets/SpaceMono-Regular.ttf");
+	QFontDatabase::addApplicationFont(":/qt/qml/simplecardsModule/assets/SpaceMono-Bold.ttf");
+	QFontDatabase::addApplicationFont(":/qt/qml/simplecardsModule/assets/SpaceMono-Italic.ttf");
 
 	QQmlApplicationEngine engine;
 	QObject::connect(

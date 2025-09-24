@@ -14,24 +14,32 @@ class DeckManager : public QObject
 	QML_ELEMENT
 	QML_SINGLETON
 
-	Q_PROPERTY(QStringList availableDecks READ availableDecks NOTIFY availableDecksChanged);
+	Q_PROPERTY(QStringList availableDecksNames READ availableDecksNames NOTIFY availableDecksNamesChanged);
+	Q_PROPERTY(QVariantMap currentCard READ currentCard NOTIFY currentCardChanged);
 
-public: 
-    explicit DeckManager(QObject *parent = nullptr);
-
-    QStringList availableDecks() const;
+public:
+	Q_INVOKABLE bool loadDeck(size_t idx);
+	//Q_INVOKABLE void setResult(some enum); (correct, wrong, skipped)
+	Q_INVOKABLE bool goNext();
 
 signals:
-    void availableDecksChanged();
+	void availableDecksNamesChanged();
+	void currentCardChanged();
+
+public: 
+	explicit DeckManager(QObject *parent = nullptr);
+
+	QStringList availableDecksNames() const;
+	QVariantMap currentCard() const;
 
 private:
-
-	std::vector<QString> decksFiles;
-	QStringList m_availableDecks;
+	std::vector<QString> decksFiles; // TODO questo full path
+	std::optional<Deck> currentDeck;
+	std::optional<size_t> m_currentCard;
 
 	std::vector<QString> getDecksFiles() const;
 	QJsonDocument getJsonDoc(const QString& jsonFilename) const;
-	Deck getDeck(QJsonDocument jsonDoc) const;
+	std::optional<Deck> getDeck(QJsonDocument jsonDoc) const;
 
 	void debug_printDeck(Deck d) const;
 };

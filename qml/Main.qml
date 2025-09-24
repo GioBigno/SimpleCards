@@ -1,22 +1,45 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 import simplecardsModule
 
 ApplicationWindow {
 	width: 640
 	height: 480
 	visible: true
-	title: qsTr("Hello World")
+	title: qsTr("Simple cards")
 
-	ListView{
+	font.family: "Space Mono"
+
+	SystemPalette{
+		id: mypalette
+		colorGroup: SystemPalette.Active
+	}
+
+	StackView {
+      	id: stack
+		initialItem: decksList
 		anchors.fill: parent
-		model: DeckManager.availableDecks
-	
-		delegate: Frame{
-			Label {
-            		text: modelData
-            		font.pixelSize: 20
-        		}
+	}
+
+	Component{
+		id: decksList
+		DecksListView{
+			onOpen: (idx) => {
+				if(!DeckManager.loadDeck(idx))
+					console.log("errore nel caricamento del mazzo")
+		
+				stack.push(testingView)
+			}
+			onEdit: (idx) => {
+			}
+			onStats: (idx) => {
+			}
 		}
+	}
+
+	Component{
+		id: testingView
+		TestingView{}
 	}
 }

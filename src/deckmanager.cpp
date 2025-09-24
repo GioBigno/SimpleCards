@@ -4,24 +4,67 @@
 #include <QStandardPaths>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QJsonDocument>
 
 DeckManager::DeckManager(QObject *parent)
     : QObject{parent}
 {
 	decksFiles = std::move(getDecksFiles());
-
-	m_availableDecks.clear();
-	m_availableDecks.reserve(decksFiles.size());
-
-	//TODO use functional style std::transform
-	for(const auto& deckFile : decksFiles)
-		m_availableDecks.append(QFileInfo(deckFile).baseName());
-	emit availableDecksChanged();
+	emit availableDecksNamesChanged();
 }
 
-QStringList DeckManager::availableDecks() const
+bool DeckManager::loadDeck(size_t idx)
 {
-	return m_availableDecks;	
+	QJsonDocument jsonDoc = getJsonDoc(decksFiles.at(idx));
+	
+	if(jsonDoc.isNull()){
+		qCritical() << "error parsing json";
+		return false;
+	}
+
+	currentDeck = getDeck(jsonDoc);
+
+	if(currentDeck.has_value() && currentDeck->size() > 0)
+		m_currentCard = 0;
+	else
+		m_currentCard.reset();
+
+	emit currentCardChanged();
+	return true;
+}
+
+bool DeckManager::goNext()
+{	
+	if(!m_currentCard.has_value() || !currentDeck.has_value() || m_currentCard >= currentDeck->size()-1)
+		return false;
+
+	(*m_currentCard)++;
+	emit currentCardChanged();
+	return true;
+}
+
+QStringList DeckManager::availableDecksNames() const
+{
+	QStringList temp_availableDecksNames;
+	temp_availableDecksNames.reserve(decksFiles.size());
+	
+	for(const auto& deckFile : decksFiles)
+		temp_availableDecksNames.emplace_back(QFileInfo(deckFile).baseName());
+
+	return temp_availableDecksNames;
+}
+
+QVariantMap DeckManager::currentCard() const
+{
+	QMap<QString, QVariant> temp_currentCard;
+
+	if(!m_currentCard.has_value() || !currentDeck.has_value())
+		return temp_currentCard;
+
+	temp_currentCard.insert("q", currentDeck->getCardAt(*m_currentCard).getQuestion());
+	temp_currentCard.insert("a", currentDeck->getCardAt(*m_currentCard).getAnswer());
+
+	return temp_currentCard;
 }
 
 std::vector<QString> DeckManager::getDecksFiles() const
@@ -33,7 +76,7 @@ std::vector<QString> DeckManager::getDecksFiles() const
 	ret.reserve(fileList.size());
 
 	//TODO use functional style std::transform
-	for (const QFileInfo &fileInfo : fileList)
+	for(const QFileInfo &fileInfo : fileList)
 		ret.emplace_back(fileInfo.absoluteFilePath());
 
 	return ret;
@@ -56,7 +99,7 @@ QJsonDocument DeckManager::getJsonDoc(const QString& jsonFilename) const
 	return jsonDoc;
 }
 
-Deck DeckManager::getDeck(QJsonDocument jsonDoc) const
+std::optional<Deck> DeckManager::getDeck(QJsonDocument jsonDoc) const
 {	
 	//TODO if jsonDoc.isNull() or bad formatted throw exception
 
@@ -77,7 +120,6 @@ Deck DeckManager::getDeck(QJsonDocument jsonDoc) const
 
 	return Deck(deckName, std::move(cards));
 }
-
 
 void DeckManager::debug_printDeck(Deck d) const
 {
