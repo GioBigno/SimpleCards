@@ -19,7 +19,9 @@ ColumnLayout{
 
 	DecksList{
 		Layout.fillWidth: true
+		Layout.maximumWidth: 750
 		Layout.fillHeight: true
+		Layout.alignment: Qt.AlignHCenter
 
 		model: DeckManager.availableDecksNames
 

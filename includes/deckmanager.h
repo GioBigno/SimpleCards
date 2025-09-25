@@ -16,7 +16,8 @@ class DeckManager : public QObject
 
 	Q_PROPERTY(QStringList availableDecksNames READ availableDecksNames NOTIFY availableDecksNamesChanged);
 	Q_PROPERTY(QVariantMap currentCard READ currentCard NOTIFY currentCardChanged);
-
+	Q_PROPERTY(QString currentDeckName READ currentDeckName NOTIFY currentDeckNameChanged);
+	
 public:
 	Q_INVOKABLE bool loadDeck(size_t idx);
 	//Q_INVOKABLE void setResult(some enum); (correct, wrong, skipped)
@@ -25,12 +26,14 @@ public:
 signals:
 	void availableDecksNamesChanged();
 	void currentCardChanged();
+	void currentDeckNameChanged();
 
 public: 
 	explicit DeckManager(QObject *parent = nullptr);
 
 	QStringList availableDecksNames() const;
 	QVariantMap currentCard() const;
+	QString currentDeckName() const;
 
 private:
 	std::vector<QString> decksFiles; // TODO questo full path

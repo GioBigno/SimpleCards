@@ -4,8 +4,8 @@ import QtQuick.Layouts
 import simplecardsModule
 
 ApplicationWindow {
-	width: 640
-	height: 480
+	width: 800
+	height: 550
 	visible: true
 	title: qsTr("Simple cards")
 
@@ -40,6 +40,11 @@ ApplicationWindow {
 
 	Component{
 		id: testingView
-		TestingView{}
+		TestingView{
+			deckName: DeckManager.currentDeckName
+			onBackBtn: function() {
+				stack.pop()
+			}
+		}
 	}
 }

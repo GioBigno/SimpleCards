@@ -30,6 +30,7 @@ bool DeckManager::loadDeck(size_t idx)
 		m_currentCard.reset();
 
 	emit currentCardChanged();
+	emit currentDeckNameChanged();
 	return true;
 }
 
@@ -65,6 +66,11 @@ QVariantMap DeckManager::currentCard() const
 	temp_currentCard.insert("a", currentDeck->getCardAt(*m_currentCard).getAnswer());
 
 	return temp_currentCard;
+}
+
+QString DeckManager::currentDeckName() const
+{
+	return currentDeck ? currentDeck->getName() : "";
 }
 
 std::vector<QString> DeckManager::getDecksFiles() const

@@ -38,29 +38,29 @@ ListView{
 
 			Item {Layout.fillWidth: true}
 
-			Button{
+			RoundButton{
 				Layout.alignment: Qt.AlignRight
 				Layout.preferredWidth: height
 				icon.source: "/qt/qml/simplecardsModule/assets/play.svg"
-				icon.color: mypalette.buttonText
+				icon.color: hovered ? mypalette.highlight : mypalette.buttonText
 				flat: true
 				display: AbstractButton.IconOnly
 				onClicked: onOpen(index)
 			}
-			Button{
+			RoundButton{
 				Layout.alignment: Qt.AlignRight
 				Layout.preferredWidth: height
 				icon.source: "/qt/qml/simplecardsModule/assets/edit.svg"
-				icon.color: mypalette.buttonText
+				icon.color: hovered ? mypalette.highlight : mypalette.buttonText
 				flat: true
 				display: AbstractButton.IconOnly
 				onClicked: onEdit(index)
 			}
-			Button{
+			RoundButton{
 				Layout.alignment: Qt.AlignRight
 				Layout.preferredWidth: height
 				icon.source: "/qt/qml/simplecardsModule/assets/stats.svg"
-				icon.color: mypalette.buttonText
+				icon.color: hovered ? mypalette.highlight : mypalette.buttonText
 				flat: true
 				display: AbstractButton.IconOnly
 				onClicked: onStats(index)
