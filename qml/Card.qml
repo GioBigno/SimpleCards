@@ -5,7 +5,6 @@ import QtQuick.Layouts
 Rectangle{
 	id: cardRectangle
 
-	//required property var currentCard
 	required property string question
 	required property string answer
 

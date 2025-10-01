@@ -8,6 +8,12 @@ ColumnLayout{
 	required property var onBackBtn
 
 	property var deckmodel: DeckUtils.deckModel
+	property int currentIdx: 0
+	property bool deckFinished: deckmodel.size() == 0
+
+	Component.onCompleted: {
+		
+	}
 
 	RowLayout{
 		Layout.preferredWidth: parent.width
@@ -24,6 +30,7 @@ ColumnLayout{
 			flat: true
 			display: AbstractButton.IconOnly
 			onClicked: onBackBtn()
+			HoverHandler {cursorShape: Qt.PointingHandCursor}
 		}
 
 		Pane{
@@ -43,6 +50,7 @@ ColumnLayout{
 	
 	Card{
 		id: card
+		visible: !deckFinished
 		Layout.alignment: Qt.AlignCenter
 		Layout.fillWidth: true
 		Layout.fillHeight: true
@@ -50,16 +58,29 @@ ColumnLayout{
 		Layout.maximumHeight: 400
 		Layout.margins: 15
 
-		//currentCard: deckManager.currentCard
-		question: "test q"
-		answer: "test a"
+		question: deckmodel.getCardAt(currentIdx).question
+		answer: deckmodel.getCardAt(currentIdx).answer
 
 		onAnimationFinished: {
-			//DeckManager.goNext()
+			//add logic to check if deck is finished
+			if(currentIdx+1 >= deckmodel.size())
+				deckFinished = true
+			else
+				currentIdx++
 		}
+	}
+
+	Rectangle{
+		visible: deckFinished
+		Layout.alignment: Qt.AlignCenter
+		Layout.fillWidth: true
+		Layout.fillHeight: true
+
+		color: "red"
 	}
 	
 	RowLayout{
+		visible: !deckFinished
 		Layout.fillWidth: true
 		Layout.fillHeight: true
 		Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
@@ -77,6 +98,7 @@ ColumnLayout{
 			flat: true
 			display: AbstractButton.IconOnly
 			onClicked: {card.triggerWrong()}
+			HoverHandler {cursorShape: Qt.PointingHandCursor}
 		}
 		RoundButton{
 			visible: card.revealed
@@ -89,6 +111,7 @@ ColumnLayout{
 			flat: true
 			display: AbstractButton.IconOnly
 			onClicked: {card.triggerCorrect()}
+			HoverHandler {cursorShape: Qt.PointingHandCursor}
 		}
 		RoundButton{
 			visible: !card.revealed
@@ -101,6 +124,7 @@ ColumnLayout{
 			flat: true
 			display: AbstractButton.IconOnly
 			onClicked: card.reveal();
+			HoverHandler {cursorShape: Qt.PointingHandCursor}
 		}
 	}
 }

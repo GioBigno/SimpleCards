@@ -46,6 +46,7 @@ ListView{
 				flat: true
 				display: AbstractButton.IconOnly
 				onClicked: onOpen(modelData.file_path)
+				HoverHandler {cursorShape: Qt.PointingHandCursor}
 			}
 			RoundButton{
 				Layout.alignment: Qt.AlignRight
@@ -55,6 +56,7 @@ ListView{
 				flat: true
 				display: AbstractButton.IconOnly
 				onClicked: onEdit(modelData.file_path)
+				HoverHandler {cursorShape: Qt.PointingHandCursor}
 			}
 			RoundButton{
 				Layout.alignment: Qt.AlignRight
@@ -64,6 +66,7 @@ ListView{
 				flat: true
 				display: AbstractButton.IconOnly
 				onClicked: onStats(modelData.file_path)
+				HoverHandler {cursorShape: Qt.PointingHandCursor}
 			}
 		}
 	}
