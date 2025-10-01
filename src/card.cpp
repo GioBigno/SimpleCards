@@ -40,5 +40,5 @@ QDate Card::getNextReview() const
 
 bool Card::toReview() const
 {
-	return lastReview < nextReview;
+	return lastReview > nextReview;
 }

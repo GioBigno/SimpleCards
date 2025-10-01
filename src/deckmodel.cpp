@@ -1,4 +1,6 @@
 #include "deckmodel.h"
+#include <random>
+#include <algorithm>
 
 DeckModel::DeckModel(Deck deck, DeckMode mode, QObject *parent) 
 	: QAbstractListModel(parent),
@@ -6,6 +8,20 @@ DeckModel::DeckModel(Deck deck, DeckMode mode, QObject *parent)
 {
 	if(mode == DeckMode::Test){
 		m_cards = m_deck.getCards();
+		
+		//move all cards to review to the front
+		auto subrange = std::ranges::partition(m_cards, [](Card c){return c.toReview();});
+
+		//resize m_cards
+		size_t n_to_review = std::ranges::distance(m_cards.cbegin(), subrange.cbegin());
+		m_cards = m_cards.subspan(0, n_to_review);
+
+		//shuffle m_cards
+		static std::random_device rd;
+		static std::mt19937 gen(rd());
+		std::ranges::shuffle(m_cards, gen);
+	}else{
+		//order by creation date		
 	}
 
 	emit deckNameChanged();

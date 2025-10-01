@@ -11,10 +11,6 @@ ColumnLayout{
 	property int currentIdx: 0
 	property bool deckFinished: deckmodel.size() == 0
 
-	Component.onCompleted: {
-		
-	}
-
 	RowLayout{
 		Layout.preferredWidth: parent.width
 		Layout.alignment: Qt.AlignHCenter
@@ -58,8 +54,8 @@ ColumnLayout{
 		Layout.maximumHeight: 400
 		Layout.margins: 15
 
-		question: deckmodel.getCardAt(currentIdx).question
-		answer: deckmodel.getCardAt(currentIdx).answer
+		question: deckFinished ? "" : deckmodel.getCardAt(currentIdx).question
+		answer: deckFinished ? "" : deckmodel.getCardAt(currentIdx).answer
 
 		onAnimationFinished: {
 			//add logic to check if deck is finished
