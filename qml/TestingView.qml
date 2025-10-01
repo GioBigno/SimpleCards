@@ -5,8 +5,9 @@ import QtQuick.Layouts
 ColumnLayout{
 	id: testingView
 
-	required property string deckName
 	required property var onBackBtn
+
+	property var deckmodel: DeckUtils.deckModel
 
 	RowLayout{
 		Layout.preferredWidth: parent.width
@@ -28,7 +29,7 @@ ColumnLayout{
 		Pane{
 			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 			Label{
-				text: deckName
+				text: deckmodel.deckName
 				font.bold: true
 				font.pointSize: 30
 			}
@@ -49,23 +50,26 @@ ColumnLayout{
 		Layout.maximumHeight: 400
 		Layout.margins: 15
 
-		question: DeckManager.currentCard["q"]
-		answer: DeckManager.currentCard["a"]
-		
+		//currentCard: deckManager.currentCard
+		question: "test q"
+		answer: "test a"
+
 		onAnimationFinished: {
-			DeckManager.goNext()
+			//DeckManager.goNext()
 		}
 	}
-
+	
 	RowLayout{
 		Layout.fillWidth: true
-		Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+		Layout.fillHeight: true
+		Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
 		Layout.bottomMargin: 15
 		spacing: 50
 		
 		RoundButton{
 			visible: card.revealed
 			Layout.preferredWidth: height
+			Layout.alignment: Qt.AlignVCenter
 			icon.source: "/qt/qml/simplecardsModule/assets/wrong.svg"
 			icon.color: hovered ? mypalette.highlight : mypalette.buttonText
 			icon.width: 40
@@ -77,6 +81,7 @@ ColumnLayout{
 		RoundButton{
 			visible: card.revealed
 			Layout.preferredWidth: height
+			Layout.alignment: Qt.AlignVCenter
 			icon.source: "/qt/qml/simplecardsModule/assets/correct.svg"
 			icon.color: hovered ? mypalette.highlight : mypalette.buttonText
 			icon.width: 40
@@ -85,7 +90,6 @@ ColumnLayout{
 			display: AbstractButton.IconOnly
 			onClicked: {card.triggerCorrect()}
 		}
-		
 		RoundButton{
 			visible: !card.revealed
 			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter

@@ -1,0 +1,39 @@
+#pragma once
+
+#include <QObject>
+#include <QQmlEngine>
+#include <QVariant>
+#include <QtQml/qqmlregistration.h>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include "deck.h"
+#include "deckmodel.h"
+#include "deckmode.h"
+
+class DeckUtils : public QObject
+{
+	Q_OBJECT
+	QML_ELEMENT
+	QML_SINGLETON
+
+	Q_PROPERTY(QVariantList availableDecks READ getAvailableDecks NOTIFY availableDecksChanged)
+	Q_PROPERTY(DeckModel* deckModel READ getDeckModel NOTIFY deckModelChanged)
+
+signals:
+	void availableDecksChanged();
+	void deckModelChanged();
+
+public:
+	QVariantList getAvailableDecks() const;
+	DeckModel* getDeckModel() const;
+	Q_INVOKABLE void loadDeck(const QString& fileName, DeckMode mode);
+	
+	explicit DeckUtils(QObject *parent = nullptr);
+
+private:    
+	std::unique_ptr<DeckModel> m_deckModel;
+	
+	QJsonDocument jsonFromFile(const QString& jsonFilename) const; //exception??
+	Deck deckFromJson(const QJsonDocument& jsonDoc) const; //exception?
+};

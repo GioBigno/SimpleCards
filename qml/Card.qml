@@ -4,9 +4,11 @@ import QtQuick.Layouts
 
 Rectangle{
 	id: cardRectangle
-	
+
+	//required property var currentCard
 	required property string question
 	required property string answer
+
 	property bool revealed: false
 	property int originalX: x
 
@@ -41,6 +43,7 @@ Rectangle{
 	clip: true
 
 	ColumnLayout{
+		id: cardContent
 		anchors.fill: parent
 		anchors.margins: 5
 

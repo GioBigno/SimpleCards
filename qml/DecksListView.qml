@@ -23,16 +23,16 @@ ColumnLayout{
 		Layout.fillHeight: true
 		Layout.alignment: Qt.AlignHCenter
 
-		model: DeckManager.availableDecksNames
+		model: DeckUtils.availableDecks
 
-		onOpen: (idx) => {
-			deckListView.onOpen(idx)
+		onOpen: (filePath) => {
+			deckListView.onOpen(filePath)
 		}
-		onEdit: (idx) => {
-			deckListView.onEdit(idx)
+		onEdit: (filePath) => {
+			deckListView.onEdit(filePath)
 		}
-		onStats: (idx) => {
-			deckListView.onStats(idx)
+		onStats: (filePath) => {
+			deckListView.onStats(filePath)
 		}
 	}
 }

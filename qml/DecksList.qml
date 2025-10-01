@@ -32,7 +32,7 @@ ListView{
 				Layout.alignment: Qt.AlignLeft
 				id: label
 				padding: 5
-				text: modelData
+				text: modelData.base_name
      				font.pixelSize: 20
 			}
 
@@ -45,7 +45,7 @@ ListView{
 				icon.color: hovered ? mypalette.highlight : mypalette.buttonText
 				flat: true
 				display: AbstractButton.IconOnly
-				onClicked: onOpen(index)
+				onClicked: onOpen(modelData.file_path)
 			}
 			RoundButton{
 				Layout.alignment: Qt.AlignRight
@@ -54,7 +54,7 @@ ListView{
 				icon.color: hovered ? mypalette.highlight : mypalette.buttonText
 				flat: true
 				display: AbstractButton.IconOnly
-				onClicked: onEdit(index)
+				onClicked: onEdit(modelData.file_path)
 			}
 			RoundButton{
 				Layout.alignment: Qt.AlignRight
@@ -63,7 +63,7 @@ ListView{
 				icon.color: hovered ? mypalette.highlight : mypalette.buttonText
 				flat: true
 				display: AbstractButton.IconOnly
-				onClicked: onStats(index)
+				onClicked: onStats(modelData.file_path)
 			}
 		}
 	}

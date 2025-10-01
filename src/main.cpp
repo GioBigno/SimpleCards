@@ -16,7 +16,7 @@
 
 #include "card.h"
 #include "deck.h"
-#include "deckmanager.h"
+//#include "deckmanager.h"
 
 bool checkDataDir();
 

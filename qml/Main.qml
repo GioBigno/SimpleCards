@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import simplecardsModule
 
 ApplicationWindow {
+	id: root
 	width: 800
 	height: 550
 	visible: true
@@ -25,23 +26,22 @@ ApplicationWindow {
 	Component{
 		id: decksList
 		DecksListView{
-			onOpen: (idx) => {
-				if(!DeckManager.loadDeck(idx))
-					console.log("errore nel caricamento del mazzo")
-		
-				stack.push(testingView)
+			onOpen: (filePath) => {	
+				//const view = testingComponent.createObject(root);
+				//view.loadDeck(filePath);
+				DeckUtils.loadDeck(filePath, DeckMode.Test)
+				stack.push(testingComponent);		
 			}
-			onEdit: (idx) => {
+			onEdit: (filePath) => {
 			}
-			onStats: (idx) => {
+			onStats: (filePath) => {
 			}
 		}
 	}
 
 	Component{
-		id: testingView
+		id: testingComponent
 		TestingView{
-			deckName: DeckManager.currentDeckName
 			onBackBtn: function() {
 				stack.pop()
 			}
