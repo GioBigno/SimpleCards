@@ -77,6 +77,12 @@ QVariant DeckModel::data(const QModelIndex &index, int role) const
 	}
 }
 
+void DeckModel::setResultAt(size_t idx, int result)
+{
+	//-1 wrong, 0 hard/almost, 1 correct
+	m_cards[idx].setResult(result);
+}
+
 QHash<int, QByteArray> DeckModel::roleNames() const
 {
 	return {

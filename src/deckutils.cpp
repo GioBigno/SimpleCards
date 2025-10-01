@@ -70,14 +70,16 @@ Deck DeckUtils::deckFromJson(const QJsonDocument& jsonDoc) const
 		QString question = cardObj.find("question").value().toString();
 		QString answer = cardObj.find("answer").value().toString();
 		QDate creationDate = QDate::fromString(cardObj.find("date_creation").value().toString(), Qt::ISODate);
-		QDate lastReview = QDate::fromString(cardObj.find("date_last_review").value().toString(), Qt::ISODate);
 		QDate nextReview = QDate::fromString(cardObj.find("date_next_review").value().toString(), Qt::ISODate);
-
-		if(creationDate.isNull() || lastReview.isNull() || nextReview.isNull()){
+		double ease = cardObj.find("ease").value().toDouble();
+		size_t interval = cardObj.find("interval").value().toInt();
+		size_t repetition = cardObj.find("repetition").value().toInt();
+		//TODO check values
+		if(creationDate.isNull() || nextReview.isNull()){
 			//DO SOMETHING!!
 		}
 
-		cards.emplace_back(question, answer, creationDate, lastReview, nextReview);
+		cards.emplace_back(question, answer, creationDate, nextReview, ease, interval, repetition);
 	}
 
 	return Deck(std::move(deckName), std::move(cards));

@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.VectorImage
 
 ColumnLayout{
 	id: testingView
@@ -14,7 +15,7 @@ ColumnLayout{
 
 	RowLayout{
 		Layout.preferredWidth: parent.width
-		Layout.alignment: Qt.AlignHCenter
+		Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
 
 		Item{
 			Layout.fillWidth: true
@@ -35,14 +36,12 @@ ColumnLayout{
 				HoverHandler {cursorShape: Qt.PointingHandCursor}
 			}
 		}
-
 		Label{
 			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 			text: deckmodel.deckName	
 			font.bold: true
 			font.pointSize: 30
 		}
-
 		Item{
 			Layout.fillWidth: true
 			Layout.preferredWidth: 1
@@ -79,17 +78,32 @@ ColumnLayout{
 		}
 	}
 
-	Rectangle{
+	ColumnLayout{
 		visible: deckFinished
-		Layout.alignment: Qt.AlignCenter
+		Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
 		Layout.fillWidth: true
 		Layout.fillHeight: true
 
-		color: "red"
+		Image{
+			Layout.alignment: Qt.AlignHCenter
+			source: "/qt/qml/simplecardsModule/assets/check.svg"
+			sourceSize.width: 100
+			sourceSize.height: 100
+			fillMode: Image.PreserveAspectFit
+			smooth: true
+			width: 50
+			height: 50
+		}
+		Label{
+			Layout.alignment: Qt.AlignHCenter
+			text: "All done here"
+			font.bold: true
+			font.pointSize: 40
+		}
 	}
 	
 	RowLayout{
-		visible: !deckFinished
+		visible: !deckFinished && card.revealed
 		Layout.fillWidth: true
 		Layout.fillHeight: true
 		Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
@@ -97,26 +111,25 @@ ColumnLayout{
 		spacing: 50
 		
 		RoundButton{
-			visible: card.revealed
 			Layout.preferredWidth: height
 			Layout.alignment: Qt.AlignVCenter
 			icon.source: "/qt/qml/simplecardsModule/assets/wrong.svg"
-			icon.color: hovered ? mypalette.highlight : mypalette.buttonText
+			icon.color: hovered ? "red" : mypalette.buttonText
 			icon.width: 40
 			icon.height: 40
 			flat: true
 			display: AbstractButton.IconOnly
 			onClicked: {
 				card.triggerWrong()
+				deckmodel.setResultAt(currentIdx, -1)
 				answered++
 			}
 			HoverHandler {cursorShape: Qt.PointingHandCursor}
 		}
 		RoundButton{
-			visible: card.revealed
 			Layout.preferredWidth: height
 			Layout.alignment: Qt.AlignVCenter
-			icon.source: "/qt/qml/simplecardsModule/assets/correct.svg"
+			icon.source: "/qt/qml/simplecardsModule/assets/almost.svg"
 			icon.color: hovered ? mypalette.highlight : mypalette.buttonText
 			icon.width: 40
 			icon.height: 40
@@ -124,12 +137,35 @@ ColumnLayout{
 			display: AbstractButton.IconOnly
 			onClicked: {
 				card.triggerCorrect()
+				deckmodel.setResultAt(currentIdx, 0)
 				answered++
 			}
 			HoverHandler {cursorShape: Qt.PointingHandCursor}
 		}
 		RoundButton{
-			visible: !card.revealed
+			Layout.preferredWidth: height
+			Layout.alignment: Qt.AlignVCenter
+			icon.source: "/qt/qml/simplecardsModule/assets/correct.svg"
+			icon.color: hovered ? "green" : mypalette.buttonText
+			icon.width: 40
+			icon.height: 40
+			flat: true
+			display: AbstractButton.IconOnly
+			onClicked: {
+				card.triggerCorrect()
+				deckmodel.setResultAt(currentIdx, 1)
+				answered++
+			}
+			HoverHandler {cursorShape: Qt.PointingHandCursor}
+		}
+	}
+	RowLayout{
+		visible: !deckFinished && !card.revealed
+		Layout.fillWidth: true
+		Layout.fillHeight: true
+		Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+		Layout.bottomMargin: 15
+		RoundButton{
 			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 			Layout.preferredWidth: height
 			icon.source: "/qt/qml/simplecardsModule/assets/reveal.svg"
@@ -138,7 +174,7 @@ ColumnLayout{
 			icon.height: 40
 			flat: true
 			display: AbstractButton.IconOnly
-			onClicked: card.reveal();
+			onClicked: card.reveal()
 			HoverHandler {cursorShape: Qt.PointingHandCursor}
 		}
 	}

@@ -5,36 +5,46 @@
 			"question": "Question 1",
 			"answer": "you should see me",
 			"date_creation": "2025-09-18",
-			"date_last_review": "2025-09-19",
+			"ease": 2.0,
+			"interval": 1,
+			"repetitions": 0,
 			"date_next_review": "2025-09-10"
 		},
 		{
 			"question": "Question 2",
 			"answer": "you should NOT see me",
 			"date_creation": "2025-09-18",
-			"date_last_review": "2025-09-19",
-			"date_next_review": "2025-09-26"
+			"ease": 2.0,
+			"interval": 1,
+			"repetitions": 0,
+			"date_next_review": "2025-10-03"
 		},
 		{
 			"question": "Question 3",
 			"answer": "you should see me",
 			"date_creation": "2025-09-18",
-			"date_last_review": "2025-09-19",
+			"ease": 2.0,
+			"interval": 1,
+			"repetitions": 0,
 			"date_next_review": "2025-09-18"
 		},
 		{
 			"question": "Question 4",
 			"answer": "you should see me",
 			"date_creation": "2025-09-18",
-			"date_last_review": "2025-09-19",
-			"date_next_review": "2025-09-5"
+			"ease": 2.0,
+			"interval": 1,
+			"repetitions": 0,
+			"date_next_review": "2025-09-05"
 		},
 		{
 			"question": "Question 5",
 			"answer": "you should NOT see me",
 			"date_creation": "2025-09-18",
-			"date_last_review": "2025-09-18",
-			"date_next_review": "2025-09-19"
+			"ease": 2.0,
+			"interval": 1,
+			"repetitions": 0,
+			"date_next_review": "2025-11-23"
 		}
 	]
 }

@@ -40,6 +40,8 @@ qt_add_qml_module(simplecards
 		assets/reveal.svg
 		assets/correct.svg
 		assets/wrong.svg
+		assets/check.svg	
+		assets/almost.svg	
 )
 
 target_include_directories(simplecards
