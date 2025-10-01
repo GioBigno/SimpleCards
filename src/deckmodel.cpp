@@ -25,6 +25,7 @@ DeckModel::DeckModel(Deck deck, DeckMode mode, QObject *parent)
 	}
 
 	emit deckNameChanged();
+	emit sizeChanged();
 }
 
 QString DeckModel::getDeckName() const

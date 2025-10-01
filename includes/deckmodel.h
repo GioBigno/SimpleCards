@@ -9,9 +9,11 @@ class DeckModel : public QAbstractListModel
 {
 	Q_OBJECT
 	Q_PROPERTY(QString deckName READ getDeckName NOTIFY deckNameChanged);
+	Q_PROPERTY(int size READ size NOTIFY sizeChanged);
 
 signals:
 	void deckNameChanged();
+	void sizeChanged();
 
 public:
 	enum Roles{
@@ -30,7 +32,7 @@ public:
 	QHash<int, QByteArray> roleNames() const override;
 
 	//these are needed when caller use this model outside of qml model views
-	Q_INVOKABLE int size() const;
+	int size() const;
 	Q_INVOKABLE QVariant getCardAt(size_t idx) const;
 
 

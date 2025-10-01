@@ -9,38 +9,52 @@ ColumnLayout{
 
 	property var deckmodel: DeckUtils.deckModel
 	property int currentIdx: 0
-	property bool deckFinished: deckmodel.size() == 0
+	property bool deckFinished: deckmodel.size == 0
+	property int answered: 0
 
 	RowLayout{
 		Layout.preferredWidth: parent.width
 		Layout.alignment: Qt.AlignHCenter
 
-		RoundButton{
-			id: backBtn
+		Item{
+			Layout.fillWidth: true
+			Layout.preferredWidth: 1
 			Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
-			Layout.leftMargin: 10
-			icon.source: "/qt/qml/simplecardsModule/assets/back.svg"
-			icon.color: hovered ? mypalette.highlight : mypalette.buttonText
-			icon.width: 20
-			icon.height: 20
-			flat: true
-			display: AbstractButton.IconOnly
-			onClicked: onBackBtn()
-			HoverHandler {cursorShape: Qt.PointingHandCursor}
-		}
-
-		Pane{
-			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-			Label{
-				text: deckmodel.deckName
-				font.bold: true
-				font.pointSize: 30
+			RoundButton{
+				id: backBtn
+				anchors.left: parent.left
+				anchors.verticalCenter: parent.verticalCenter
+				anchors.leftMargin: 10
+				icon.source: "/qt/qml/simplecardsModule/assets/back.svg"
+				icon.color: hovered ? mypalette.highlight : mypalette.buttonText
+				icon.width: 20
+				icon.height: 20
+				flat: true
+				display: AbstractButton.IconOnly
+				onClicked: onBackBtn()
+				HoverHandler {cursorShape: Qt.PointingHandCursor}
 			}
 		}
 
+		Label{
+			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+			text: deckmodel.deckName	
+			font.bold: true
+			font.pointSize: 30
+		}
+
 		Item{
-			Layout.preferredWidth: backBtn.width
-			Layout.rightMargin: 10
+			Layout.fillWidth: true
+			Layout.preferredWidth: 1
+			Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+			Label{
+				anchors.right: parent.right
+                		anchors.verticalCenter: parent.verticalCenter
+				anchors.rightMargin: 10
+				text: answered + "/" + deckmodel.size
+				font.bold: true
+				font.pointSize: 20
+			}
 		}
 	}
 	
@@ -58,8 +72,7 @@ ColumnLayout{
 		answer: deckFinished ? "" : deckmodel.getCardAt(currentIdx).answer
 
 		onAnimationFinished: {
-			//add logic to check if deck is finished
-			if(currentIdx+1 >= deckmodel.size())
+			if(currentIdx+1 >= deckmodel.size)
 				deckFinished = true
 			else
 				currentIdx++
@@ -93,7 +106,10 @@ ColumnLayout{
 			icon.height: 40
 			flat: true
 			display: AbstractButton.IconOnly
-			onClicked: {card.triggerWrong()}
+			onClicked: {
+				card.triggerWrong()
+				answered++
+			}
 			HoverHandler {cursorShape: Qt.PointingHandCursor}
 		}
 		RoundButton{
@@ -106,7 +122,10 @@ ColumnLayout{
 			icon.height: 40
 			flat: true
 			display: AbstractButton.IconOnly
-			onClicked: {card.triggerCorrect()}
+			onClicked: {
+				card.triggerCorrect()
+				answered++
+			}
 			HoverHandler {cursorShape: Qt.PointingHandCursor}
 		}
 		RoundButton{
