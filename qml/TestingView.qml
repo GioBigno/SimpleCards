@@ -7,6 +7,7 @@ ColumnLayout{
 	id: testingView
 
 	required property var onBackBtn
+	required property string filePath
 
 	property var deckmodel: DeckUtils.deckModel
 	property int currentIdx: 0

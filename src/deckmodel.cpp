@@ -33,6 +33,11 @@ QString DeckModel::getDeckName() const
 	return m_deck.getName();
 }
 
+Deck DeckModel::getDeck() const
+{
+	return m_deck;
+}
+
 int DeckModel::size() const
 {
 	return m_cards.size();

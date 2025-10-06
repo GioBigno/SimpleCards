@@ -27,10 +27,8 @@ ApplicationWindow {
 		id: decksList
 		DecksListView{
 			onOpen: (filePath) => {	
-				//const view = testingComponent.createObject(root);
-				//view.loadDeck(filePath);
 				DeckUtils.loadDeck(filePath, DeckMode.Test)
-				stack.push(testingComponent);		
+				stack.push(testingComponent, {"filePath": filePath});		
 			}
 			onEdit: (filePath) => {
 			}
@@ -42,8 +40,10 @@ ApplicationWindow {
 	Component{
 		id: testingComponent
 		TestingView{
+			id: testingView
 			onBackBtn: function() {
 				stack.pop()
+				DeckUtils.saveDeck(testingView.filePath);
 			}
 		}
 	}

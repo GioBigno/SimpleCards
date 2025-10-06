@@ -36,6 +36,14 @@ void DeckUtils::loadDeck(const QString& fileName, DeckMode mode)
 	emit deckModelChanged();
 }
 
+void DeckUtils::saveDeck(const QString& fileName)
+{
+	bool res = jsonToFile(jsonFromDeck(m_deckModel->getDeck()), fileName);
+
+	if(!res)
+		qDebug() << "Error writing saving deck to file";
+}
+
 QJsonDocument DeckUtils::jsonFromFile(const QString& jsonFilename) const
 {
 	//TODO use expected and FP
@@ -52,6 +60,24 @@ QJsonDocument DeckUtils::jsonFromFile(const QString& jsonFilename) const
 	jsonFile.close();
 
 	return jsonDoc;
+}
+
+bool DeckUtils::jsonToFile(const QJsonDocument& doc, const QString& fileName) const
+{
+	//TODO use expected and FP
+	QString tempPath = fileName + ".tmp";
+	QFile tempFile(tempPath);
+
+	if(!tempFile.open(QIODevice::WriteOnly)){
+		qDebug() << "Error: " << tempFile.errorString();
+		return false;
+	}
+
+	tempFile.write(doc.toJson(QJsonDocument::Indented));
+	tempFile.close();
+
+	QFile::remove(fileName);
+	return QFile::rename(tempPath, fileName);
 }
 
 Deck DeckUtils::deckFromJson(const QJsonDocument& jsonDoc) const
@@ -83,4 +109,29 @@ Deck DeckUtils::deckFromJson(const QJsonDocument& jsonDoc) const
 	}
 
 	return Deck(std::move(deckName), std::move(cards));
+}
+
+QJsonDocument DeckUtils::jsonFromDeck(const Deck& deck) const
+{
+	//TODO use expected and FP
+
+	QJsonObject mainObj;
+	mainObj.insert("deck_name", deck.getName());
+	
+	QJsonArray cardsArray;
+	for(const Card& card : deck.getCards()){
+		QJsonObject cardObj;
+		cardObj.insert("question", QJsonValue(card.getQuestion()));
+		cardObj.insert("answer", QJsonValue(card.getAnswer()));
+		cardObj.insert("date_creation", QJsonValue(card.getCreationDate().toString(Qt::ISODate)));
+		cardObj.insert("ease", QJsonValue(card.getEase()));
+		cardObj.insert("interval", QJsonValue(static_cast<qint64>(card.getInterval())));
+		cardObj.insert("repetitions", QJsonValue(static_cast<qint64>(card.getRepetitions())));
+		cardObj.insert("date_next_review", QJsonValue(card.getNextReviewDate().toString(Qt::ISODate)));
+		cardsArray.push_back(cardObj);
+	}
+	mainObj.insert("cards", cardsArray);
+
+	QJsonDocument doc(mainObj);
+	return doc;
 }

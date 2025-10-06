@@ -14,6 +14,7 @@ public:
 
 	QString getName() const;
 	std::span<Card> getCards();
+	std::span<const Card> getCards() const;
 	void addCard(Card&& c);
 	Card getCardAt(size_t idx) const;
 

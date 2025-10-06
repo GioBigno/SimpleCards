@@ -25,6 +25,7 @@ public:
 	explicit DeckModel(Deck deck, DeckMode mode, QObject *parent = nullptr);
 
 	QString getDeckName() const;
+	Deck getDeck() const;
 
 	// Required overrides:
 	int rowCount(const QModelIndex &parent = QModelIndex()) const override;

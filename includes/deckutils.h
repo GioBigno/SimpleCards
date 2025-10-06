@@ -28,12 +28,16 @@ public:
 	QVariantList getAvailableDecks() const;
 	DeckModel* getDeckModel() const;
 	Q_INVOKABLE void loadDeck(const QString& fileName, DeckMode mode);
-	
+	Q_INVOKABLE void saveDeck(const QString& fileName);
+
 	explicit DeckUtils(QObject *parent = nullptr);
 
 private:    
 	std::unique_ptr<DeckModel> m_deckModel;
 	
 	QJsonDocument jsonFromFile(const QString& jsonFilename) const; //exception??
+	bool jsonToFile(const QJsonDocument& jsonDoc, const QString& fileName) const; //exception??
 	Deck deckFromJson(const QJsonDocument& jsonDoc) const; //exception?
+	QJsonDocument jsonFromDeck(const Deck& deck) const; //exception??
+
 };

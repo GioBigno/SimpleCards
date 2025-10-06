@@ -20,18 +20,15 @@ QString Deck::getName() const
 {
 	return name;
 }
-/*
-void Deck::shuffle()
-{
-	auto rd = std::random_device {};
-	auto rng = std::default_random_engine {rd()};
-	std::ranges::shuffle(cards, rng);
-}
-*/
 
 std::span<Card> Deck::getCards()
 {
 	return std::span<Card>{cards};
+}
+
+std::span<const Card> Deck::getCards() const
+{
+	return std::span<const Card>{cards};
 }
 
 void Deck::addCard(Card&& c)
