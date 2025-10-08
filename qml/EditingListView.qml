@@ -1,17 +1,20 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.VectorImage
 
 ColumnLayout{
 	id: testingView
 
 	required property var onBackBtn
+	required property var onSelected
 	required property string filePath
 
 	property var deckmodel: DeckUtils.deckModel
-	required property int currentIdx
+	property int currentIdx: 0
 
 	RowLayout{
+		z: 1
 		Layout.preferredWidth: parent.width
 		Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
 
@@ -30,7 +33,7 @@ ColumnLayout{
 				icon.height: 20
 				flat: true
 				display: AbstractButton.IconOnly
-				onClicked: {onBackBtn()}
+				onClicked: onBackBtn()
 				HoverHandler {cursorShape: Qt.PointingHandCursor}
 			}
 		}
@@ -43,23 +46,45 @@ ColumnLayout{
 		Item{
 			Layout.fillWidth: true
 			Layout.preferredWidth: 1
+			Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+		}
+	}
+
+	Flickable{
+		id: cardGridFlickable
+		Layout.fillWidth: true
+		Layout.fillHeight: true
+
+		flickableDirection: Flickable.VerticalFlick
+		clip: true
+		contentWidth: width
+		contentHeight: cardGrid.height 
+
+		FlexboxLayout{
+			id: cardGrid
+			width: cardGridFlickable.contentWidth
+			gap: 10
+			wrap: FlexboxLayout.Wrap
+			justifyContent: FlexboxLayout.JustifyCenter
+
+			Repeater{
+				id: repeater
+				model: deckmodel
+
+				Card{
+					id: card
+					Layout.preferredWidth: 300
+					Layout.preferredHeight: 200
+					question: model.question
+					answer: model.answer
+					revealed: false
+					MouseArea{
+						anchors.fill: parent
+						onClicked: {onSelected(model.index)}
+					}
+				}
+			}	
 		}
 	}
 	
-	CardEdit{
-		id: card
-		Layout.alignment: Qt.AlignCenter
-		Layout.fillWidth: true
-		Layout.fillHeight: true
-		Layout.maximumWidth: 600
-		Layout.maximumHeight: 400
-		Layout.margins: 15
-
-		question: deckmodel.getCardAt(currentIdx).question
-		answer: deckmodel.getCardAt(currentIdx).answer
-		revealed: true
-		
-		updateQuestion: function(text){deckmodel.setQuestionAt(currentIdx, text)}
-		updateAnswer: function(text){deckmodel.setAnswerAt(currentIdx, text)}
-	}
 }

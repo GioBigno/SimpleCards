@@ -36,6 +36,8 @@ public:
 	int size() const;
 	Q_INVOKABLE QVariant getCardAt(size_t idx) const;
 	Q_INVOKABLE void setResultAt(size_t idx, int result);
+	Q_INVOKABLE void setQuestionAt(size_t idx, QString text);
+	Q_INVOKABLE void setAnswerAt(size_t idx, QString text);
 
 private:
 	Deck m_deck;

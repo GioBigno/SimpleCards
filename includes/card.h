@@ -9,7 +9,9 @@ public:
 	Card(QString question, QString answer, QDate creationDate, QDate nextReviewDate, double ease, size_t interval, size_t repetitions);
 
 	QString getQuestion() const;
+	void setQuestion(QString text);
 	QString getAnswer() const;
+	void setAnswer(QString text);
 	QDate getCreationDate() const;
 	QDate getNextReviewDate() const;
 	double getEase() const;

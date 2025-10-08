@@ -94,3 +94,21 @@ QHash<int, QByteArray> DeckModel::roleNames() const
 		{Answer, "answer"}
 	};
 }
+
+void DeckModel::setQuestionAt(size_t idx, QString text)
+{
+	if(idx >= m_cards.size())
+		return;
+
+	m_cards[idx].setQuestion(text);
+	emit dataChanged(this->index(static_cast<int>(idx)), this->index(static_cast<int>(idx)), {Question});
+}
+
+void DeckModel::setAnswerAt(size_t idx, QString text)
+{
+	if(idx >= m_cards.size())
+		return;
+
+	m_cards[idx].setAnswer(text);
+	emit dataChanged(this->index(static_cast<int>(idx)), this->index(static_cast<int>(idx)), {Answer});
+}

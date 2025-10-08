@@ -72,10 +72,12 @@ ColumnLayout{
 		answer: deckFinished ? "" : deckmodel.getCardAt(currentIdx).answer
 
 		onAnimationFinished: {
-			if(currentIdx+1 >= deckmodel.size)
+			if(currentIdx+1 >= deckmodel.size){
 				deckFinished = true
-			else
+			}else{
 				currentIdx++
+				card.revealed = false
+			}
 		}
 	}
 

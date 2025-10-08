@@ -28,8 +28,10 @@ qt_add_qml_module(simplecards
 		qml/DecksList.qml
 		qml/DecksListView.qml
 		qml/TestingView.qml
+		qml/EditingListView.qml
 		qml/EditingView.qml
 		qml/Card.qml
+		qml/CardEdit.qml
 	RESOURCES
 		assets/SpaceMono-Regular.ttf
 		assets/SpaceMono-Bold.ttf

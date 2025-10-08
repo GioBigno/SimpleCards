@@ -22,9 +22,19 @@ QString Card::getQuestion() const
 	return question;
 }
 
+void Card::setQuestion(QString text)
+{
+	question = std::move(text);
+}
+
 QString Card::getAnswer() const 
 {
 	return answer;
+}
+
+void Card::setAnswer(QString text)
+{
+	answer = std::move(text);
 }
 	
 QDate Card::getCreationDate() const

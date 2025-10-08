@@ -24,8 +24,6 @@ Rectangle{
 	}
 
 	onQuestionChanged: {
-		//if(revealed === true)
-		//	revealed = false
 		border.width = 0
 	}
 
