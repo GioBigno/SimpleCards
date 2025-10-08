@@ -58,7 +58,7 @@ ColumnLayout{
 		question: deckmodel.getCardAt(currentIdx).question
 		answer: deckmodel.getCardAt(currentIdx).answer
 		revealed: true
-		
+
 		updateQuestion: function(text){deckmodel.setQuestionAt(currentIdx, text)}
 		updateAnswer: function(text){deckmodel.setAnswerAt(currentIdx, text)}
 	}

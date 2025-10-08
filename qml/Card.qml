@@ -7,9 +7,9 @@ Rectangle{
 
 	property string question: ""
 	property string answer: ""
-
 	property bool revealed: false
 	property int originalX: x
+	property bool hovered: false
 
 	signal animationFinished()
 
@@ -32,6 +32,10 @@ Rectangle{
 		colorGroup: SystemPalette.Active
 	}
 
+	onHoveredChanged: {
+		console.log("h: " + hovered)
+	}
+
 	radius: 10
 	color: mypalette.base
 	clip: true
@@ -50,6 +54,7 @@ Rectangle{
 			font.pointSize: 15
 			text: question
 			wrapMode: Text.Wrap
+			fontSizeMode: Text.Fit
 			elide: Text.ElideRight
 		}
 		Label{
@@ -58,11 +63,11 @@ Rectangle{
 			Layout.alignment: Qt.AlignCenter
 			horizontalAlignment: Text.AlignHCenter
 			verticalAlignment: Text.AlignVCenter
-			
 			visible: revealed
 			font.pointSize: 15
 			text: answer
 			wrapMode: Text.Wrap
+			fontSizeMode: Text.Fit
 			elide: Text.ElideRight
 		}
 	}

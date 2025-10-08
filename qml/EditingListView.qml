@@ -12,6 +12,11 @@ ColumnLayout{
 
 	property var deckmodel: DeckUtils.deckModel
 	property int currentIdx: 0
+	
+	SystemPalette{
+		id: mypalette
+		colorGroup: SystemPalette.Active
+	}
 
 	RowLayout{
 		z: 1
@@ -67,6 +72,28 @@ ColumnLayout{
 			wrap: FlexboxLayout.Wrap
 			justifyContent: FlexboxLayout.JustifyCenter
 
+			Rectangle{
+				Layout.preferredWidth: 300
+				Layout.preferredHeight: 200
+				color: mypalette.alternateBase
+				radius: 10
+				
+				Label{
+					anchors.fill: parent
+					horizontalAlignment: Text.AlignHCenter
+					verticalAlignment: Text.AlignVCenter
+					font.pointSize: 15
+					text: "Add new card"
+				}
+				
+				MouseArea{
+					anchors.fill: parent
+					hoverEnabled: true
+					onClicked: {console.log("add card")}
+					HoverHandler{cursorShape: Qt.PointingHandCursor}
+				}
+			}
+
 			Repeater{
 				id: repeater
 				model: deckmodel
@@ -80,7 +107,14 @@ ColumnLayout{
 					revealed: false
 					MouseArea{
 						anchors.fill: parent
+						hoverEnabled: true
 						onClicked: {onSelected(model.index)}
+						HoverHandler{
+							cursorShape: Qt.PointingHandCursor
+							onHoveredChanged: {
+								card.color = hovered ? mypalette.alternateBase : mypalette.base
+							}
+						}
 					}
 				}
 			}	
