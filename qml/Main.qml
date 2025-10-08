@@ -31,6 +31,8 @@ ApplicationWindow {
 				stack.push(testingComponent, {"filePath": filePath});		
 			}
 			onEdit: (filePath) => {
+				DeckUtils.loadDeck(filePath, DeckMode.Edit)
+				stack.push(editingComponent, {"filePath": filePath});		
 			}
 			onStats: (filePath) => {
 			}
@@ -44,6 +46,17 @@ ApplicationWindow {
 			onBackBtn: function() {
 				stack.pop()
 				DeckUtils.saveDeck(testingView.filePath);
+			}
+		}
+	}
+
+	Component{
+		id: editingComponent
+		EditingView{
+			id: editingView
+			onBackBtn: function() {
+				stack.pop()
+				DeckUtils.saveDeck(editingView.filePath);
 			}
 		}
 	}

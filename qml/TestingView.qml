@@ -175,7 +175,7 @@ ColumnLayout{
 			icon.height: 40
 			flat: true
 			display: AbstractButton.IconOnly
-			onClicked: card.reveal()
+			onClicked: {card.revealed = true}
 			HoverHandler {cursorShape: Qt.PointingHandCursor}
 		}
 	}

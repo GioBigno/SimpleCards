@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Qml)
-qt_standard_project_setup(REQUIRES 6.8)
+qt_standard_project_setup(REQUIRES 6.10)
 
 qt_add_executable(simplecards
 	src/main.cpp
@@ -28,6 +28,7 @@ qt_add_qml_module(simplecards
 		qml/DecksList.qml
 		qml/DecksListView.qml
 		qml/TestingView.qml
+		qml/EditingView.qml
 		qml/Card.qml
 	RESOURCES
 		assets/SpaceMono-Regular.ttf

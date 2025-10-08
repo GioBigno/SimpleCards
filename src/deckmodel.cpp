@@ -21,7 +21,8 @@ DeckModel::DeckModel(Deck deck, DeckMode mode, QObject *parent)
 		static std::mt19937 gen(rd());
 		std::ranges::shuffle(m_cards, gen);
 	}else{
-		//order by creation date		
+		//TODO order by creation date
+		m_cards = m_deck.getCards();
 	}
 
 	emit deckNameChanged();
@@ -64,8 +65,6 @@ QVariant DeckModel::getCardAt(size_t idx) const
 
 QVariant DeckModel::data(const QModelIndex &index, int role) const
 {
-	qDebug() << "request for data: idx:" << index.row() << "role:" << role;
-	
 	if(!index.isValid() || index.row() < 0 || index.row() >= static_cast<int>(m_cards.size()))
 		return {};
 	

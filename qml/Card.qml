@@ -5,17 +5,13 @@ import QtQuick.Layouts
 Rectangle{
 	id: cardRectangle
 
-	required property string question
-	required property string answer
+	property string question: ""
+	property string answer: ""
 
 	property bool revealed: false
 	property int originalX: x
 
 	signal animationFinished()
-
-	function reveal(){
-		revealed = !revealed;
-	}
 
 	function triggerCorrect(){
 		cardRectangle.border.color = "green"
@@ -28,7 +24,8 @@ Rectangle{
 	}
 
 	onQuestionChanged: {
-		cardRectangle.revealed = false
+		//if(revealed === true)
+		//	revealed = false
 		border.width = 0
 	}
 
@@ -47,18 +44,28 @@ Rectangle{
 		anchors.margins: 5
 
 		Label{
-			Layout.alignment: Qt.AlignHCenter
+			Layout.fillWidth: true
+			Layout.fillHeight: true
+			Layout.alignment: Qt.AlignCenter
+			horizontalAlignment: Text.AlignHCenter
+			verticalAlignment: Text.AlignVCenter
 			font.pointSize: 15
 			text: question
 			wrapMode: Text.Wrap
+			elide: Text.ElideRight
 		}
 		Label{
-			Layout.alignment: Qt.AlignHCenter
+			Layout.fillWidth: true
+			Layout.fillHeight: true
+			Layout.alignment: Qt.AlignCenter
+			horizontalAlignment: Text.AlignHCenter
+			verticalAlignment: Text.AlignVCenter
+			
 			visible: revealed
 			font.pointSize: 15
 			text: answer
 			wrapMode: Text.Wrap
-			clip: true
+			elide: Text.ElideRight
 		}
 	}
 	
