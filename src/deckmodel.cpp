@@ -112,3 +112,9 @@ void DeckModel::setAnswerAt(size_t idx, QString text)
 	m_cards[idx].setAnswer(text);
 	emit dataChanged(this->index(static_cast<int>(idx)), this->index(static_cast<int>(idx)), {Answer});
 }
+
+void DeckModel::changeTitle(QString text)
+{
+	m_deck.setName(std::move(text));
+	emit deckNameChanged();
+}

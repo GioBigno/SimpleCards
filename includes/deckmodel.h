@@ -38,6 +38,7 @@ public:
 	Q_INVOKABLE void setResultAt(size_t idx, int result);
 	Q_INVOKABLE void setQuestionAt(size_t idx, QString text);
 	Q_INVOKABLE void setAnswerAt(size_t idx, QString text);
+	Q_INVOKABLE void changeTitle(QString text);
 
 private:
 	Deck m_deck;

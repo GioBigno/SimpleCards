@@ -21,6 +21,11 @@ QString Deck::getName() const
 	return name;
 }
 
+void Deck::setName(QString text)
+{
+	name = std::move(text);
+}
+
 std::span<Card> Deck::getCards()
 {
 	return std::span<Card>{cards};

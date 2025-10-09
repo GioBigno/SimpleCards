@@ -13,6 +13,7 @@ public:
 	Deck(QString name, std::vector<Card>&& cards);
 
 	QString getName() const;
+	void setName(QString text);
 	std::span<Card> getCards();
 	std::span<const Card> getCards() const;
 	void addCard(Card&& c);

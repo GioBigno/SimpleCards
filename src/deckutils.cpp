@@ -2,6 +2,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QStandardPaths>
+#include <QRegularExpression>
 
 DeckUtils::DeckUtils(QObject *parent)
     : QObject{parent}
@@ -42,6 +43,25 @@ void DeckUtils::saveDeck(const QString& fileName)
 
 	if(!res)
 		qDebug() << "Error writing saving deck to file";
+}
+
+QString DeckUtils::changeFileName(const QString& filePath, const QString& deckName)
+{
+	QFileInfo fileInfo(filePath);
+    
+	if(!fileInfo.exists())
+		qWarning() << "File does not exist:" << filePath;
+
+	QString sanitizedName = sanitizeFileName(deckName);
+	QString newFilePath = fileInfo.absolutePath() + "/" + sanitizedName + ".json";
+	
+	QFile file(filePath);
+	if(!QFile::rename(filePath, newFilePath)){
+		return filePath;
+	}else{
+		emit availableDecksChanged();
+		return newFilePath; 
+	}
 }
 
 QJsonDocument DeckUtils::jsonFromFile(const QString& jsonFilename) const
@@ -134,4 +154,16 @@ QJsonDocument DeckUtils::jsonFromDeck(const Deck& deck) const
 
 	QJsonDocument doc(mainObj);
 	return doc;
+}
+
+QString DeckUtils::sanitizeFileName(QString str) const
+{
+	str = str.trimmed();
+
+	// Replace one or more spaces with a single underscore
+	str.replace(QRegularExpression("\\s+"), "_");
+	// Remove invalid filename characters
+	str.remove(QRegularExpression("[/\\\\:*?\"<>|]"));
+	
+	return str;
 }

@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import QtQuick.VectorImage
 
 ColumnLayout{
-	id: testingView
+	id: editingListView
 
 	required property var onBackBtn
 	required property var onSelected
@@ -42,11 +42,16 @@ ColumnLayout{
 				HoverHandler {cursorShape: Qt.PointingHandCursor}
 			}
 		}
-		Label{
+		TextInput{
 			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 			text: deckmodel.deckName	
+			font.family: "Space Mono"
 			font.bold: true
 			font.pointSize: 30
+			onEditingFinished: {
+				deckmodel.changeTitle(text)
+				editingListView.filePath = DeckUtils.changeFileName(filePath, text)
+			}
 		}
 		Item{
 			Layout.fillWidth: true
