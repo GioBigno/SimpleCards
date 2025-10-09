@@ -61,6 +61,10 @@ ApplicationWindow {
 			onSelected: function(idx){
 				stack.push(editingComponent, {"filePath": filePath, "currentIdx": idx})
 			}
+			onDeleteDeck: function(){
+				stack.pop()
+				DeckUtils.deleteDeck(filePath)
+			}
 		}
 	}
 	
@@ -68,9 +72,12 @@ ApplicationWindow {
 		id: editingComponent
 		EditingView{
 			id: editingView
-			onBackBtn: function() {
+			onBackBtn: function(){
 				stack.pop()
 				DeckUtils.saveDeck(editingView.filePath);
+			}
+			onDeleteCard: function(){
+				stack.pop()
 			}
 		}
 	}

@@ -45,6 +45,15 @@ void DeckUtils::saveDeck(const QString& fileName)
 		qDebug() << "Error writing saving deck to file";
 }
 
+void DeckUtils::deleteDeck(const QString& fileName)
+{
+	m_deckModel.reset();
+	emit deckModelChanged();
+	//TODO remove instead of rename
+	QFile::rename(fileName, fileName+".deleted");
+	emit availableDecksChanged();
+}
+
 QString DeckUtils::changeFileName(const QString& filePath, const QString& deckName)
 {
 	QFileInfo fileInfo(filePath);

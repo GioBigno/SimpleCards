@@ -4,6 +4,7 @@
 #include "deck.h"
 #include "card.h"
 #include "deckmode.h"
+#include <QDebug>
 
 class DeckModel : public QAbstractListModel
 {
@@ -40,6 +41,7 @@ public:
 	Q_INVOKABLE void setAnswerAt(size_t idx, QString text);
 	Q_INVOKABLE void changeTitle(QString text);
 	Q_INVOKABLE size_t addCard();
+	Q_INVOKABLE void deleteCardAt(size_t idx);
 
 private:
 	Deck m_deck;

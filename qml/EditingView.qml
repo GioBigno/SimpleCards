@@ -3,9 +3,10 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 ColumnLayout{
-	id: testingView
+	id: editingView
 
 	required property var onBackBtn
+	required property var onDeleteCard
 	required property string filePath
 
 	property var deckmodel: DeckUtils.deckModel
@@ -43,6 +44,23 @@ ColumnLayout{
 		Item{
 			Layout.fillWidth: true
 			Layout.preferredWidth: 1
+			Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+			RoundButton{
+				anchors.right: parent.right
+				anchors.verticalCenter: parent.verticalCenter
+				anchors.rightMargin: 10
+				icon.source: "/qt/qml/simplecardsModule/assets/trash.svg"
+				icon.color: hovered ? mypalette.highlight : mypalette.buttonText
+				icon.width: 25
+				icon.height: 25
+				flat: true
+				display: AbstractButton.IconOnly
+				onClicked: {
+					deckmodel.deleteCardAt(currentIdx)
+					onDeleteCard()
+				}
+				HoverHandler {cursorShape: Qt.PointingHandCursor}
+			}
 		}
 	}
 	

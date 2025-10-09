@@ -50,3 +50,8 @@ size_t Deck::size() const
 {
 	return cards.size();
 }
+
+void Deck::removeCardAt(size_t idx)
+{
+	cards.erase(cards.begin() + idx);		
+}

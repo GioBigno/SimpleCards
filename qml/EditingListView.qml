@@ -8,6 +8,7 @@ ColumnLayout{
 
 	required property var onBackBtn
 	required property var onSelected
+	required property var onDeleteDeck
 	required property string filePath
 
 	property var deckmodel: DeckUtils.deckModel
@@ -44,7 +45,8 @@ ColumnLayout{
 		}
 		TextInput{
 			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-			text: deckmodel.deckName	
+			text: deckmodel ? deckmodel.deckName : ""
+			color: mypalette.buttonText
 			font.family: "Space Mono"
 			font.bold: true
 			font.pointSize: 30
@@ -57,6 +59,21 @@ ColumnLayout{
 			Layout.fillWidth: true
 			Layout.preferredWidth: 1
 			Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+			RoundButton{
+				anchors.right: parent.right
+				anchors.verticalCenter: parent.verticalCenter
+				anchors.rightMargin: 10
+				icon.source: "/qt/qml/simplecardsModule/assets/trash.svg"
+				icon.color: hovered ? mypalette.highlight : mypalette.buttonText
+				icon.width: 25
+				icon.height: 25
+				flat: true
+				display: AbstractButton.IconOnly
+				onClicked: {
+					onDeleteDeck()
+				}
+				HoverHandler {cursorShape: Qt.PointingHandCursor}
+			}
 		}
 	}
 

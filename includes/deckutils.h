@@ -29,6 +29,7 @@ public:
 	DeckModel* getDeckModel() const;
 	Q_INVOKABLE void loadDeck(const QString& fileName, DeckMode mode);
 	Q_INVOKABLE void saveDeck(const QString& fileName);
+	Q_INVOKABLE void deleteDeck(const QString& fileName);
 	Q_INVOKABLE QString changeFileName(const QString& filePath, const QString& deckName);
 	
 	explicit DeckUtils(QObject *parent = nullptr);

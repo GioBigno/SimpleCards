@@ -128,3 +128,15 @@ size_t DeckModel::addCard()
 	emit sizeChanged();
 	return m_cards.size() - 1;
 }
+
+void DeckModel::deleteCardAt(size_t idx)
+{
+	if(idx >= m_cards.size())
+		return;
+
+	beginRemoveRows(QModelIndex(), static_cast<int>(idx), static_cast<int>(idx));
+	m_deck.removeCardAt(idx);
+	m_cards = m_deck.getCards();
+	endRemoveRows();
+	emit sizeChanged();
+}

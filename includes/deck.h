@@ -18,6 +18,7 @@ public:
 	std::span<const Card> getCards() const;
 	void addCard(Card&& c);
 	Card getCardAt(size_t idx) const;
+	void removeCardAt(size_t idx);
 
 	size_t size() const;
 
