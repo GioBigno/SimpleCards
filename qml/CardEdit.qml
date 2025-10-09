@@ -34,6 +34,8 @@ Rectangle{
 				horizontalAlignment: Text.AlignHCenter
 				verticalAlignment: Text.AlignVCenter
 				antialiasing: true
+				placeholderText: "Insert question..."
+				placeholderTextColor: mypalette.buttonText
 				text: question
 				font.pointSize: 15
 				wrapMode: Text.Wrap
@@ -49,6 +51,8 @@ Rectangle{
 				horizontalAlignment: Text.AlignHCenter
 				verticalAlignment: Text.AlignVCenter
 				antialiasing: true
+				placeholderText: "Insert answer..."
+				placeholderTextColor: mypalette.buttonText
 				text: answer
 				font.pointSize: 15
 				wrapMode: Text.Wrap

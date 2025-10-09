@@ -94,7 +94,9 @@ ColumnLayout{
 				MouseArea{
 					anchors.fill: parent
 					hoverEnabled: true
-					onClicked: {console.log("add card")}
+					onClicked: {
+						onSelected(deckmodel.addCard())
+					}
 					HoverHandler{cursorShape: Qt.PointingHandCursor}
 				}
 			}

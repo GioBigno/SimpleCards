@@ -39,6 +39,7 @@ public:
 	Q_INVOKABLE void setQuestionAt(size_t idx, QString text);
 	Q_INVOKABLE void setAnswerAt(size_t idx, QString text);
 	Q_INVOKABLE void changeTitle(QString text);
+	Q_INVOKABLE size_t addCard();
 
 private:
 	Deck m_deck;

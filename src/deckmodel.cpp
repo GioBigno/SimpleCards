@@ -118,3 +118,13 @@ void DeckModel::changeTitle(QString text)
 	m_deck.setName(std::move(text));
 	emit deckNameChanged();
 }
+
+size_t DeckModel::addCard()
+{
+	beginInsertRows(QModelIndex(), m_cards.size(), m_cards.size());
+	m_deck.addCard(Card("", ""));	
+	m_cards = m_deck.getCards();
+	endInsertRows();
+	emit sizeChanged();
+	return m_cards.size() - 1;
+}

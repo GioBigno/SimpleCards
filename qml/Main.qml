@@ -58,7 +58,9 @@ ApplicationWindow {
 				stack.pop()
 				DeckUtils.saveDeck(editingListView.filePath);
 			}
-			onSelected: function(idx){stack.push(editingComponent, {"filePath": filePath, "currentIdx": idx})}
+			onSelected: function(idx){
+				stack.push(editingComponent, {"filePath": filePath, "currentIdx": idx})
+			}
 		}
 	}
 	
