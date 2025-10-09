@@ -128,6 +128,9 @@ ColumnLayout{
 				answered++
 			}
 			HoverHandler {cursorShape: Qt.PointingHandCursor}
+			ToolTip.visible: hovered
+    			ToolTip.text: qsTr("Wrong answer")
+			ToolTip.delay: 1000
 		}
 		RoundButton{
 			Layout.preferredWidth: height
@@ -144,6 +147,9 @@ ColumnLayout{
 				answered++
 			}
 			HoverHandler {cursorShape: Qt.PointingHandCursor}
+			ToolTip.visible: hovered
+    			ToolTip.text: qsTr("Correct but hard")
+			ToolTip.delay: 1000
 		}
 		RoundButton{
 			Layout.preferredWidth: height
@@ -160,6 +166,9 @@ ColumnLayout{
 				answered++
 			}
 			HoverHandler {cursorShape: Qt.PointingHandCursor}
+			ToolTip.visible: hovered
+    			ToolTip.text: qsTr("Correct answer")
+			ToolTip.delay: 1000
 		}
 	}
 	RowLayout{
@@ -179,6 +188,9 @@ ColumnLayout{
 			display: AbstractButton.IconOnly
 			onClicked: {card.revealed = true}
 			HoverHandler {cursorShape: Qt.PointingHandCursor}
+			ToolTip.visible: hovered
+    			ToolTip.text: qsTr("Reveal answer")
+			ToolTip.delay: 1000
 		}
 	}
 }

@@ -60,6 +60,9 @@ ColumnLayout{
 					onDeleteCard()
 				}
 				HoverHandler {cursorShape: Qt.PointingHandCursor}
+				ToolTip.visible: hovered
+    				ToolTip.text: qsTr("Delete card")
+				ToolTip.delay: 1000
 			}
 		}
 	}

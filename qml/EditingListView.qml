@@ -54,6 +54,7 @@ ColumnLayout{
 				deckmodel.changeTitle(text)
 				editingListView.filePath = DeckUtils.changeFileName(filePath, text)
 			}
+			HoverHandler {cursorShape: Qt.IBeamCursor}
 		}
 		Item{
 			Layout.fillWidth: true
@@ -69,10 +70,11 @@ ColumnLayout{
 				icon.height: 25
 				flat: true
 				display: AbstractButton.IconOnly
-				onClicked: {
-					onDeleteDeck()
-				}
+				onClicked: {onDeleteDeck()}
 				HoverHandler {cursorShape: Qt.PointingHandCursor}
+				ToolTip.visible: hovered
+    				ToolTip.text: qsTr("Delete deck")
+				ToolTip.delay: 1000
 			}
 		}
 	}
