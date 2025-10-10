@@ -42,28 +42,54 @@ void DeckUtils::saveDeck(const QString& fileName)
 	bool res = jsonToFile(jsonFromDeck(m_deckModel->getDeck()), fileName);
 
 	if(!res)
-		qDebug() << "Error writing saving deck to file";
+		qDebug() << "Error saving deck to file";
 }
 
 void DeckUtils::deleteDeck(const QString& fileName)
 {
 	m_deckModel.reset();
 	emit deckModelChanged();
-	//TODO remove instead of rename
-	QFile::rename(fileName, fileName+".deleted");
+	//QFile::rename(fileName, fileName+".deleted");
+	QFile::remove(fileName);
 	emit availableDecksChanged();
 }
 
+QString DeckUtils::createEmptyDeckFile()
+{
+	QString deckName("New Deck");
+	QDir dataDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+	
+	QString fileName = QString("%1/%2.json")
+				 .arg(dataDir.absolutePath())
+				 .arg(sanitizeFileName(deckName));
+	fileName = uniqueFileName(std::move(fileName));
+
+	Deck emptyDeck(deckName);
+	
+	if(!jsonToFile(jsonFromDeck(emptyDeck), fileName))
+		qDebug() << "Error saving deck to file";
+
+	emit availableDecksChanged();
+	return fileName;
+}
+	
 QString DeckUtils::changeFileName(const QString& filePath, const QString& deckName)
 {
 	QFileInfo fileInfo(filePath);
-    
+
 	if(!fileInfo.exists())
 		qWarning() << "File does not exist:" << filePath;
 
 	QString sanitizedName = sanitizeFileName(deckName);
-	QString newFilePath = fileInfo.absolutePath() + "/" + sanitizedName + ".json";
-	
+	QString newFilePath = QString("%1/%2.json")
+				    .arg(fileInfo.absolutePath())
+				    .arg(sanitizedName);
+
+	if(filePath == newFilePath)
+		return filePath;
+
+	newFilePath = uniqueFileName(std::move(newFilePath));
+
 	QFile file(filePath);
 	if(!QFile::rename(filePath, newFilePath)){
 		return filePath;
@@ -176,3 +202,28 @@ QString DeckUtils::sanitizeFileName(QString str) const
 	
 	return str;
 }
+
+QString DeckUtils::uniqueFileName(QString str) const
+{
+	//given a file name it returns a new name that doesn't exists
+	QFileInfo fileInfo(str);
+	QString dirPath = fileInfo.absolutePath();
+	QString baseName = fileInfo.baseName();
+	QString extension = fileInfo.completeSuffix();
+	size_t counter = 1;
+
+	while(QFile::exists(str)){
+		str = QString("%1/%2(%3)")
+			.arg(dirPath)
+			.arg(baseName)
+			.arg(counter);
+
+		if(!extension.isEmpty())
+			str += "." + extension;
+
+		counter++;
+	}
+
+	return str;
+}
+

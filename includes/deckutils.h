@@ -30,6 +30,7 @@ public:
 	Q_INVOKABLE void loadDeck(const QString& fileName, DeckMode mode);
 	Q_INVOKABLE void saveDeck(const QString& fileName);
 	Q_INVOKABLE void deleteDeck(const QString& fileName);
+	Q_INVOKABLE QString createEmptyDeckFile();
 	Q_INVOKABLE QString changeFileName(const QString& filePath, const QString& deckName);
 	
 	explicit DeckUtils(QObject *parent = nullptr);
@@ -43,4 +44,5 @@ private:
 	Deck deckFromJson(const QJsonDocument& jsonDoc) const; //exception?
 	QJsonDocument jsonFromDeck(const Deck& deck) const; //exception??
 	QString sanitizeFileName(QString str) const;
+	QString uniqueFileName(QString str) const;
 };

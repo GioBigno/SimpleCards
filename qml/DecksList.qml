@@ -14,14 +14,14 @@ ListView{
 	}
 
 	spacing: 2
+	leftMargin: 10
+	rightMargin: 10
 
 	delegate: Rectangle{
 		color: index%2 == 0 ? mypalette.base : mypalette.alternateBase
 		height: label.height
 		anchors.left: parent.left
 		anchors.right: parent.right
-		anchors.leftMargin: 10
-		anchors.rightMargin: 10
 
 		RowLayout{
 			anchors.fill: parent
