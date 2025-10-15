@@ -16,9 +16,12 @@ public:
 	void setName(QString text);
 	std::span<Card> getCards();
 	std::span<const Card> getCards() const;
+	const Card& getCardAt(size_t idx) const;
 	void addCard(Card&& c);
-	Card getCardAt(size_t idx) const;
 	void removeCardAt(size_t idx);
+	void setQuestionAt(size_t idx, QString text);
+	void setAnswerAt(size_t idx, QString text);
+	void setResultAt(size_t idx, int result);
 
 	size_t size() const;
 

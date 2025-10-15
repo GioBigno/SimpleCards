@@ -5,6 +5,7 @@
 
 class Card{
 public:
+	Card();
 	Card(QString question, QString answer);
 	Card(QString question, QString answer, QDate creationDate, QDate nextReviewDate, double ease, size_t interval, size_t repetitions);
 
@@ -22,8 +23,8 @@ public:
 	void setResult(int result); 
 
 private:
-	QString question;
-	QString answer;
+	QString question = "";
+	QString answer = "";
 	QDate creationDate = QDate::currentDate();
 	QDate nextReviewDate = QDate::currentDate();
 	double ease = 2.0;

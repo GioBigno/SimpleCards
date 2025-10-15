@@ -36,14 +36,14 @@ std::span<const Card> Deck::getCards() const
 	return std::span<const Card>{cards};
 }
 
+const Card& Deck::getCardAt(size_t idx) const
+{
+	return cards[idx];
+}
+
 void Deck::addCard(Card&& c)
 {
 	cards.push_back(std::move(c));
-}
-
-Card Deck::getCardAt(size_t idx) const
-{
-	return cards.at(idx);
 }
 
 size_t Deck::size() const
@@ -53,5 +53,21 @@ size_t Deck::size() const
 
 void Deck::removeCardAt(size_t idx)
 {
-	cards.erase(cards.begin() + idx);		
+	cards.erase(cards.begin() + idx);
+}
+
+void Deck::setQuestionAt(size_t idx, QString text)
+{
+	cards[idx].setQuestion(text);	
+}
+
+void Deck::setAnswerAt(size_t idx, QString text)
+{
+	cards[idx].setAnswer(text);
+}
+
+void Deck::setResultAt(size_t idx, int result)
+{
+	cards[idx].setResult(result);
+}
 }

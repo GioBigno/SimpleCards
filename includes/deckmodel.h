@@ -45,5 +45,5 @@ public:
 
 private:
 	Deck m_deck;
-	std::span<Card> m_cards;
+	size_t m_size = 0;
 };

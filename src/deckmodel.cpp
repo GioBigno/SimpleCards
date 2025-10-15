@@ -7,22 +7,19 @@ DeckModel::DeckModel(Deck deck, DeckMode mode, QObject *parent)
 	  m_deck(std::move(deck))
 {
 	if(mode == DeckMode::Test){
-		m_cards = m_deck.getCards();
+		std::span<Card> temp = m_deck.getCards();
 		
 		//move all cards to review to the front
-		auto subrange = std::ranges::partition(m_cards, [](Card c){return c.toReview();});
-
-		//resize m_cards
-		size_t n_to_review = std::ranges::distance(m_cards.cbegin(), subrange.cbegin());
-		m_cards = m_cards.subspan(0, n_to_review);
+		auto subrange = std::ranges::partition(temp, [](Card c){return c.toReview();});
+		m_size = std::ranges::distance(temp.cbegin(), subrange.cbegin());
 
 		//shuffle m_cards
 		static std::random_device rd;
 		static std::mt19937 gen(rd());
-		std::ranges::shuffle(m_cards, gen);
+		std::shuffle(temp.begin(), subrange.begin(), gen);
 	}else{
-		//TODO order by creation date
-		m_cards = m_deck.getCards();
+		//TODO order by creation date (?)
+		m_size = m_deck.size();
 	}
 
 	emit deckNameChanged();
@@ -51,10 +48,10 @@ int DeckModel::rowCount(const QModelIndex &parent) const
 
 QVariant DeckModel::getCardAt(size_t idx) const
 {
-	if(idx >= m_cards.size())
+	if(idx >= m_size)
         return {};
 
-	Card& card = m_cards[idx];
+	const Card& card = m_deck.getCardAt(idx);
 	
 	QVariantMap cardVariant;
 	cardVariant["question"] = card.getQuestion();
@@ -65,10 +62,10 @@ QVariant DeckModel::getCardAt(size_t idx) const
 
 QVariant DeckModel::data(const QModelIndex &index, int role) const
 {
-	if(!index.isValid() || index.row() < 0 || index.row() >= static_cast<int>(m_cards.size()))
+	if(!index.isValid() || index.row() < 0 || index.row() >= static_cast<int>(m_size))
 		return {};
 	
-	Card& card = m_cards[index.row()];
+	const Card& card = m_deck.getCardAt(index.row());
 	switch(role){
 		case Roles::Question:
 			return card.getQuestion();
@@ -84,7 +81,7 @@ QVariant DeckModel::data(const QModelIndex &index, int role) const
 void DeckModel::setResultAt(size_t idx, int result)
 {
 	//-1 wrong, 0 hard/almost, 1 correct
-	m_cards[idx].setResult(result);
+	m_deck.setResultAt(idx, result);
 }
 
 QHash<int, QByteArray> DeckModel::roleNames() const
@@ -97,19 +94,19 @@ QHash<int, QByteArray> DeckModel::roleNames() const
 
 void DeckModel::setQuestionAt(size_t idx, QString text)
 {
-	if(idx >= m_cards.size())
+	if(idx >= m_size)
 		return;
 
-	m_cards[idx].setQuestion(text);
+	m_deck.setQuestionAt(idx, text);
 	emit dataChanged(this->index(static_cast<int>(idx)), this->index(static_cast<int>(idx)), {Question});
 }
 
 void DeckModel::setAnswerAt(size_t idx, QString text)
 {
-	if(idx >= m_cards.size())
+	if(idx >= m_size)
 		return;
 
-	m_cards[idx].setAnswer(text);
+	m_deck.setAnswerAt(idx, text);
 	emit dataChanged(this->index(static_cast<int>(idx)), this->index(static_cast<int>(idx)), {Answer});
 }
 
@@ -121,22 +118,22 @@ void DeckModel::changeTitle(QString text)
 
 size_t DeckModel::addCard()
 {
-	beginInsertRows(QModelIndex(), m_cards.size(), m_cards.size());
-	m_deck.addCard(Card("", ""));	
-	m_cards = m_deck.getCards();
+	beginInsertRows(QModelIndex(), m_size, m_size);
+	m_deck.addCard(Card());	
+	m_size = m_deck.size();
 	endInsertRows();
 	emit sizeChanged();
-	return m_cards.size() - 1;
+	return m_size - 1;
 }
 
 void DeckModel::deleteCardAt(size_t idx)
 {
-	if(idx >= m_cards.size())
+	if(idx >= m_size)
 		return;
 
 	beginRemoveRows(QModelIndex(), static_cast<int>(idx), static_cast<int>(idx));
 	m_deck.removeCardAt(idx);
-	m_cards = m_deck.getCards();
 	endRemoveRows();
+	m_size = m_deck.size();
 	emit sizeChanged();
 }

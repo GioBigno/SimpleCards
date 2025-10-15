@@ -2,6 +2,9 @@
 #include <cmath>
 #include <algorithm>
 
+Card::Card()
+{}
+
 Card::Card(QString question, QString answer)
 	: question(std::move(question)), 
 	  answer(std::move(answer))
