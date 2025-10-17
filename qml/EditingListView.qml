@@ -13,7 +13,16 @@ ColumnLayout{
 
 	property var deckmodel: DeckUtils.deckModel
 	property int currentIdx: 0
-	
+
+	property bool titleModified: false
+	function changeTitle(text){
+		if(!titleModified)
+			return
+		titleModified = false
+		deckmodel.changeTitle(text)
+		editingListView.filePath = DeckUtils.changeFileName(filePath, text)
+	}
+
 	SystemPalette{
 		id: mypalette
 		colorGroup: SystemPalette.Active
@@ -39,20 +48,23 @@ ColumnLayout{
 				icon.height: 20
 				flat: true
 				display: AbstractButton.IconOnly
-				onClicked: onBackBtn()
+				onClicked: {
+					changeTitle(titleInput.text)
+					onBackBtn()
+				}
 				HoverHandler {cursorShape: Qt.PointingHandCursor}
 			}
 		}
 		TextInput{
+			id: titleInput
 			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 			text: deckmodel ? deckmodel.deckName : ""
 			color: mypalette.buttonText
 			font.family: "Space Mono"
 			font.bold: true
 			font.pointSize: 30
-			onEditingFinished: {
-				deckmodel.changeTitle(text)
-				editingListView.filePath = DeckUtils.changeFileName(filePath, text)
+			onTextEdited: {
+				titleModified = true
 			}
 			HoverHandler {cursorShape: Qt.IBeamCursor}
 		}
@@ -70,7 +82,10 @@ ColumnLayout{
 				icon.height: 25
 				flat: true
 				display: AbstractButton.IconOnly
-				onClicked: {onDeleteDeck()}
+				onClicked: {
+					changeTitle(titleInput.text)
+					onDeleteDeck()
+				}
 				HoverHandler {cursorShape: Qt.PointingHandCursor}
 				ToolTip.visible: hovered
     				ToolTip.text: qsTr("Delete deck")
@@ -114,6 +129,7 @@ ColumnLayout{
 					anchors.fill: parent
 					hoverEnabled: true
 					onClicked: {
+						changeTitle(titleInput.text)
 						onSelected(deckmodel.addCard())
 					}
 					HoverHandler{cursorShape: Qt.PointingHandCursor}
@@ -134,7 +150,10 @@ ColumnLayout{
 					MouseArea{
 						anchors.fill: parent
 						hoverEnabled: true
-						onClicked: {onSelected(model.index)}
+						onClicked: {
+							changeTitle(titleInput.text)
+							onSelected(model.index)
+						}
 						HoverHandler{
 							cursorShape: Qt.PointingHandCursor
 							onHoveredChanged: {
