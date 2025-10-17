@@ -43,7 +43,6 @@ ColumnLayout{
 		}
 		Item{
 			Layout.fillWidth: true
-			Layout.preferredWidth: 1
 			Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
 			RoundButton{
 				anchors.right: parent.right
