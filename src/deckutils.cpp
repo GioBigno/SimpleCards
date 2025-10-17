@@ -3,6 +3,8 @@
 #include <QFileInfo>
 #include <QStandardPaths>
 #include <QRegularExpression>
+#include <map>
+#include <tuple>
 
 DeckUtils::DeckUtils(QObject *parent)
     : QObject{parent}
@@ -138,6 +140,7 @@ bool DeckUtils::jsonToFile(const QJsonDocument& doc, const QString& fileName) co
 Deck DeckUtils::deckFromJson(const QJsonDocument& jsonDoc) const
 {	
 	//TODO use expected and FP
+	//fields are assumed to be there !!
 
 	QJsonObject deckObj = jsonDoc.object();
 	QString deckName = deckObj.find("deck_name").value().toString();
@@ -163,7 +166,25 @@ Deck DeckUtils::deckFromJson(const QJsonDocument& jsonDoc) const
 		cards.emplace_back(question, answer, creationDate, nextReview, ease, interval, repetition);
 	}
 
-	return Deck(std::move(deckName), std::move(cards));
+	QJsonArray statsArr = deckObj.value("stats").toArray();
+	std::map<QDate, std::tuple<int, int, int>> master_history;
+	
+	for(auto log : statsArr){
+		QJsonObject logObj = log.toObject();
+		QDate logDate = QDate::fromString(logObj.find("date").value().toString(), Qt::ISODate);
+		int n_new = logObj.find("new").value().toInt();
+		int n_learning = logObj.find("learning").value().toInt();
+		int n_mastered = logObj.find("mastered").value().toInt();
+		
+		//TODO check values
+		if(logDate.isNull()){
+			//DO SOMETHING!!
+		}
+
+		master_history[logDate] = std::make_tuple(n_new, n_learning, n_mastered);
+	}
+	
+	return Deck(std::move(deckName), std::move(cards), master_history);
 }
 
 QJsonDocument DeckUtils::jsonFromDeck(const Deck& deck) const
@@ -186,6 +207,17 @@ QJsonDocument DeckUtils::jsonFromDeck(const Deck& deck) const
 		cardsArray.push_back(cardObj);
 	}
 	mainObj.insert("cards", cardsArray);
+
+	QJsonArray statsArray;
+	for(auto const& [date, level] : deck.getMasterHistory()){
+		QJsonObject logObj;
+		logObj.insert("date", QJsonValue(date.toString(Qt::ISODate)));
+		logObj.insert("new", QJsonValue(std::get<0>(level)));
+		logObj.insert("learning", QJsonValue(std::get<1>(level)));
+		logObj.insert("mastered", QJsonValue(std::get<2>(level)));
+		statsArray.push_back(logObj);
+	}
+	mainObj.insert("stats", statsArray);
 
 	QJsonDocument doc(mainObj);
 	return doc;

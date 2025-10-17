@@ -24,6 +24,7 @@ DeckModel::DeckModel(Deck deck, DeckMode mode, QObject *parent)
 
 	emit deckNameChanged();
 	emit sizeChanged();
+	emit statsHistoryChanged();
 }
 
 QString DeckModel::getDeckName() const
@@ -36,9 +37,24 @@ Deck DeckModel::getDeck() const
 	return m_deck;
 }
 
+QVariantList DeckModel::getStatsHistory() const
+{
+	QVariantList dataList;
+	for(auto const& [date, level] : m_deck.getMasterHistory()){
+		QVariantMap entry;
+		entry["date"] = date;
+      	entry["new"] = std::get<0>(level);
+      	entry["learning"] = std::get<1>(level);
+		entry["mastered"] = std::get<2>(level);
+		dataList.append(entry);
+	}
+
+	return dataList;
+}
+
 int DeckModel::size() const
 {
-	return m_cards.size();
+	return m_size;
 }
 
 int DeckModel::rowCount(const QModelIndex &parent) const
@@ -56,6 +72,7 @@ QVariant DeckModel::getCardAt(size_t idx) const
 	QVariantMap cardVariant;
 	cardVariant["question"] = card.getQuestion();
 	cardVariant["answer"]   = card.getAnswer();
+	cardVariant["mastery"]   = card.getEase();
 	
 	return cardVariant;
 }
@@ -73,22 +90,27 @@ QVariant DeckModel::data(const QModelIndex &index, int role) const
 		case Roles::Answer:
 			return card.getAnswer();
 			break;
+		case Roles::Mastery:
+			return card.getEase();
+			break;
 		default:
 			return {};
 	}
 }
 
-void DeckModel::setResultAt(size_t idx, int result)
+void DeckModel::setResultAt(size_t idx, CardResult result)
 {
-	//-1 wrong, 0 hard/almost, 1 correct
 	m_deck.setResultAt(idx, result);
+	emit statsHistoryChanged();
+	emit dataChanged(this->index(static_cast<int>(idx)), this->index(static_cast<int>(idx)), {Mastery});
 }
 
 QHash<int, QByteArray> DeckModel::roleNames() const
 {
 	return {
 		{Question, "question"},
-		{Answer, "answer"}
+		{Answer, "answer"},
+		{Mastery, "mastery"}
 	};
 }
 
@@ -123,6 +145,7 @@ size_t DeckModel::addCard()
 	m_size = m_deck.size();
 	endInsertRows();
 	emit sizeChanged();
+	emit statsHistoryChanged();
 	return m_size - 1;
 }
 
@@ -136,4 +159,5 @@ void DeckModel::deleteCardAt(size_t idx)
 	endRemoveRows();
 	m_size = m_deck.size();
 	emit sizeChanged();
+	emit statsHistoryChanged();
 }

@@ -9,7 +9,7 @@
 #include <QJsonArray>
 #include "deck.h"
 #include "deckmodel.h"
-#include "deckmode.h"
+#include "deckenums.h"
 
 class DeckUtils : public QObject
 {
@@ -32,7 +32,7 @@ public:
 	Q_INVOKABLE void deleteDeck(const QString& fileName);
 	Q_INVOKABLE QString createEmptyDeckFile();
 	Q_INVOKABLE QString changeFileName(const QString& filePath, const QString& deckName);
-	
+
 	explicit DeckUtils(QObject *parent = nullptr);
 
 private:

@@ -2,6 +2,7 @@
 
 #include <QDate>
 #include <QString>
+#include "deckenums.h"
 
 class Card{
 public:
@@ -20,7 +21,7 @@ public:
 	size_t getRepetitions() const;
 
 	bool toReview() const;
-	void setResult(int result); 
+	void setResult(CardResult); 
 
 private:
 	QString question = "";

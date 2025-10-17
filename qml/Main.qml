@@ -35,6 +35,8 @@ ApplicationWindow {
 				stack.push(editingListComponent, {"filePath": filePath});		
 			}
 			onStats: (filePath) => {
+				DeckUtils.loadDeck(filePath, DeckMode.Edit)
+				stack.push(statsComponent, {"filePath": filePath});		
 			}
 		}
 	}
@@ -78,6 +80,17 @@ ApplicationWindow {
 			}
 			onDeleteCard: function(){
 				stack.pop()
+			}
+		}
+	}
+
+	Component{
+		id: statsComponent
+		StatsView{
+			id: statsView
+			onBackBtn: function(){
+				stack.pop()
+				DeckUtils.saveDeck(statsView.filePath);
 			}
 		}
 	}

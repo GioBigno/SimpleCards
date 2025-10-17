@@ -124,7 +124,7 @@ ColumnLayout{
 			display: AbstractButton.IconOnly
 			onClicked: {
 				card.triggerWrong()
-				deckmodel.setResultAt(currentIdx, -1)
+				deckmodel.setResultAt(currentIdx, CardResult.Wrong)
 				answered++
 			}
 			HoverHandler {cursorShape: Qt.PointingHandCursor}
@@ -143,7 +143,7 @@ ColumnLayout{
 			display: AbstractButton.IconOnly
 			onClicked: {
 				card.triggerCorrect()
-				deckmodel.setResultAt(currentIdx, 0)
+				deckmodel.setResultAt(currentIdx, CardResult.Hard)
 				answered++
 			}
 			HoverHandler {cursorShape: Qt.PointingHandCursor}
@@ -162,7 +162,7 @@ ColumnLayout{
 			display: AbstractButton.IconOnly
 			onClicked: {
 				card.triggerCorrect()
-				deckmodel.setResultAt(currentIdx, 1)
+				deckmodel.setResultAt(currentIdx, CardResult.Correct)
 				answered++
 			}
 			HoverHandler {cursorShape: Qt.PointingHandCursor}

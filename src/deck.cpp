@@ -11,10 +11,13 @@ Deck::Deck(QString name)
 	: name(std::move(name))
 {}
 
-Deck::Deck(QString name, std::vector<Card>&& cards)
+Deck::Deck(QString name, std::vector<Card>&& cards, std::map<QDate, std::tuple<int, int, int>> master_history)
 	: name(std::move(name)),
-	  cards(std::move(cards))
-{}
+	  cards(std::move(cards)),
+	  master_history(std::move(master_history))
+{
+	updateStats();
+}
 
 QString Deck::getName() const
 {
@@ -43,6 +46,10 @@ const Card& Deck::getCardAt(size_t idx) const
 
 void Deck::addCard(Card&& c)
 {
+	auto& today_tuple = master_history[QDate::currentDate()];
+	CardMasteryLevel mastery = calculateMastery(c);
+	increaseTupleByMastery(today_tuple, mastery);
+
 	cards.push_back(std::move(c));
 }
 
@@ -53,6 +60,10 @@ size_t Deck::size() const
 
 void Deck::removeCardAt(size_t idx)
 {
+	auto& today_tuple = master_history[QDate::currentDate()];
+	CardMasteryLevel mastery = calculateMastery(cards[idx]);
+	decreaseTupleByMastery(today_tuple, mastery);
+	
 	cards.erase(cards.begin() + idx);
 }
 
@@ -66,8 +77,61 @@ void Deck::setAnswerAt(size_t idx, QString text)
 	cards[idx].setAnswer(text);
 }
 
-void Deck::setResultAt(size_t idx, int result)
+void Deck::setResultAt(size_t idx, CardResult result)
 {
+	auto& today_tuple = master_history[QDate::currentDate()];
+	CardMasteryLevel old_mastery = calculateMastery(cards[idx]);
+	decreaseTupleByMastery(today_tuple, old_mastery);
+
 	cards[idx].setResult(result);
+
+	CardMasteryLevel new_mastery = calculateMastery(cards[idx]);
+	increaseTupleByMastery(today_tuple, new_mastery);
 }
+
+std::map<QDate, std::tuple<int, int, int>> Deck::getMasterHistory() const
+{
+	return master_history;
+}
+
+Deck::CardMasteryLevel Deck::calculateMastery(const Card& c) const
+{
+	const double ease = c.getEase();
+	const size_t repetitions = c.getRepetitions();
+
+	if(ease < 2.05 && repetitions < 2)
+		return CardMasteryLevel::New;
+	if(ease < 2.1 || repetitions < 6)
+		return CardMasteryLevel::Learning;
+	return CardMasteryLevel::Mastered;
+}
+
+void Deck::increaseTupleByMastery(std::tuple<int, int, int>& t, CardMasteryLevel mastery)
+{
+	switch(mastery){
+		case CardMasteryLevel::New: std::get<0>(t)++; break;
+		case CardMasteryLevel::Learning: std::get<1>(t)++; break;
+		case CardMasteryLevel::Mastered: std::get<2>(t)++; break;
+		default: std::unreachable();
+	}
+}
+
+void Deck::decreaseTupleByMastery(std::tuple<int, int, int>& t, CardMasteryLevel mastery)
+{
+	switch(mastery){
+		case CardMasteryLevel::New: std::get<0>(t)--; break;
+		case CardMasteryLevel::Learning: std::get<1>(t)--; break;
+		case CardMasteryLevel::Mastered: std::get<2>(t)--; break;
+		default: std::unreachable();
+	}
+}
+
+void Deck::updateStats()
+{
+	auto& today_tuple = master_history[QDate::currentDate()];
+	today_tuple = std::make_tuple(0, 0, 0);
+
+	for(const Card& c : std::as_const(cards)){
+		increaseTupleByMastery(today_tuple, calculateMastery(c));
+	}
 }

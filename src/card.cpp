@@ -70,22 +70,28 @@ bool Card::toReview() const
 	return nextReviewDate <= QDate::currentDate();
 }
 
-void Card::setResult(int result)
+void Card::setResult(CardResult result)
 {
 	static constexpr double MIN_EASE = 1.3;
 
-	if(result == -1){
-		repetitions = 0;
-		interval = 1;
-		ease = std::max(MIN_EASE, ease - 0.2);
-	}else if(result == 0){
-		repetitions += 1;
-		interval = std::round(interval * 1.2);
-		ease = std::max(MIN_EASE, ease - 0.05);
-	}else{
-		repetitions += 1;
-		interval = std::round(interval * ease);
-		ease += 0.03;
+	switch(result){
+		case CardResult::Wrong:
+			repetitions = 0;
+			interval = 1;
+			ease = std::max(MIN_EASE, ease - 0.1);
+			break;
+		case CardResult::Hard:
+			repetitions += 1;
+			interval = std::round(interval * 1.2);
+			ease = std::max(MIN_EASE, ease - 0.05);
+			break;
+		case CardResult::Correct:
+			repetitions += 1;
+			interval = std::round(interval * ease);
+			ease += 0.03;
+			break;
+		default:
+			std::unreachable();
 	}
 
 	nextReviewDate = QDate::currentDate().addDays(interval);

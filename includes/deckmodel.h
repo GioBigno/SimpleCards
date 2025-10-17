@@ -3,7 +3,9 @@
 #include <QAbstractListModel>
 #include "deck.h"
 #include "card.h"
-#include "deckmode.h"
+#include "deckenums.h"
+#include <QVariant>
+#include <QList>
 #include <QDebug>
 
 class DeckModel : public QAbstractListModel
@@ -11,15 +13,18 @@ class DeckModel : public QAbstractListModel
 	Q_OBJECT
 	Q_PROPERTY(QString deckName READ getDeckName NOTIFY deckNameChanged);
 	Q_PROPERTY(int size READ size NOTIFY sizeChanged);
+	Q_PROPERTY(QVariantList statsHistory READ getStatsHistory NOTIFY statsHistoryChanged);
 
 signals:
 	void deckNameChanged();
 	void sizeChanged();
+	void statsHistoryChanged();
 
 public:
 	enum Roles{
 		Question = Qt::UserRole + 1,
-		Answer
+		Answer,
+		Mastery
 	};
 	Q_ENUM(Roles)
 
@@ -27,6 +32,7 @@ public:
 
 	QString getDeckName() const;
 	Deck getDeck() const;
+	QVariantList getStatsHistory() const;
 
 	// Required overrides:
 	int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -36,7 +42,7 @@ public:
 	//these are needed when caller use this model outside of qml model views
 	int size() const;
 	Q_INVOKABLE QVariant getCardAt(size_t idx) const;
-	Q_INVOKABLE void setResultAt(size_t idx, int result);
+	Q_INVOKABLE void setResultAt(size_t idx, CardResult result);
 	Q_INVOKABLE void setQuestionAt(size_t idx, QString text);
 	Q_INVOKABLE void setAnswerAt(size_t idx, QString text);
 	Q_INVOKABLE void changeTitle(QString text);
