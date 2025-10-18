@@ -236,6 +236,7 @@ ColumnLayout{
             axisY: ValueAxis {
                 id: yAxis
 		    min: 0
+		    labelDecimals: 0
 		    tickInterval: Math.floor(max / 5)
             }
 
