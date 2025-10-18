@@ -9,7 +9,6 @@ ColumnLayout{
 	required property var onBackBtn
 	required property var onSelected
 	required property var onDeleteDeck
-	required property string filePath
 
 	property var deckmodel: DeckUtils.deckModel
 	property int currentIdx: 0
@@ -20,7 +19,7 @@ ColumnLayout{
 			return
 		titleModified = false
 		deckmodel.changeTitle(text)
-		editingListView.filePath = DeckUtils.changeFileName(filePath, text)
+		DeckUtils.changeLoadedDeckFileName(text)
 	}
 
 	SystemPalette{

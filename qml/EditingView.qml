@@ -7,7 +7,6 @@ ColumnLayout{
 
 	required property var onBackBtn
 	required property var onDeleteCard
-	required property string filePath
 
 	property var deckmodel: DeckUtils.deckModel
 	required property int currentIdx

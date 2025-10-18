@@ -28,15 +28,15 @@ public:
 	QVariantList getAvailableDecks() const;
 	DeckModel* getDeckModel() const;
 	Q_INVOKABLE void loadDeck(const QString& fileName, DeckMode mode);
-	Q_INVOKABLE void saveDeck(const QString& fileName);
-	Q_INVOKABLE void deleteDeck(const QString& fileName);
+	Q_INVOKABLE void saveLoadedDeck();
+	Q_INVOKABLE void deleteLoadedDeck();
 	Q_INVOKABLE QString createEmptyDeckFile();
-	Q_INVOKABLE QString changeFileName(const QString& filePath, const QString& deckName);
+	Q_INVOKABLE void changeLoadedDeckFileName(const QString& deckName);
 
 	explicit DeckUtils(QObject *parent = nullptr);
 
 private:
-	QString m_deckFilePath;
+	QString m_deckFilePath = "";
 	std::unique_ptr<DeckModel> m_deckModel;
 	
 	QJsonDocument jsonFromFile(const QString& jsonFilename) const; //exception??

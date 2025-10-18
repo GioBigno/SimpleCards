@@ -28,15 +28,15 @@ ApplicationWindow {
 		DecksListView{
 			onOpen: (filePath) => {	
 				DeckUtils.loadDeck(filePath, DeckMode.Test)
-				stack.push(testingComponent, {"filePath": filePath});		
+				stack.push(testingComponent);		
 			}
 			onEdit: (filePath) => {
 				DeckUtils.loadDeck(filePath, DeckMode.Edit)
-				stack.push(editingListComponent, {"filePath": filePath});		
+				stack.push(editingListComponent);		
 			}
 			onStats: (filePath) => {
 				DeckUtils.loadDeck(filePath, DeckMode.Edit)
-				stack.push(statsComponent, {"filePath": filePath});		
+				stack.push(statsComponent);		
 			}
 		}
 	}
@@ -47,7 +47,7 @@ ApplicationWindow {
 			id: testingView
 			onBackBtn: function() {
 				stack.pop()
-				DeckUtils.saveDeck(testingView.filePath);
+				DeckUtils.saveLoadedDeck();
 			}
 		}
 	}
@@ -58,14 +58,14 @@ ApplicationWindow {
 			id: editingListView
 			onBackBtn: function() {
 				stack.pop()
-				DeckUtils.saveDeck(editingListView.filePath);
+				DeckUtils.saveLoadedDeck();
 			}
 			onSelected: function(idx){
-				stack.push(editingComponent, {"filePath": filePath, "currentIdx": idx})
+				stack.push(editingComponent, {"currentIdx": idx})
 			}
 			onDeleteDeck: function(){
 				stack.pop()
-				DeckUtils.deleteDeck(filePath)
+				DeckUtils.deleteLoadedDeck()
 			}
 		}
 	}
@@ -76,7 +76,6 @@ ApplicationWindow {
 			id: editingView
 			onBackBtn: function(){
 				stack.pop()
-				DeckUtils.saveDeck(editingView.filePath);
 			}
 			onDeleteCard: function(){
 				stack.pop()
@@ -90,7 +89,7 @@ ApplicationWindow {
 			id: statsView
 			onBackBtn: function(){
 				stack.pop()
-				DeckUtils.saveDeck(statsView.filePath);
+				DeckUtils.saveLoadedDeck();
 			}
 		}
 	}

@@ -8,7 +8,6 @@ ColumnLayout{
 	id: statsView
 
 	required property var onBackBtn
-	required property string filePath
 
 	property var deckmodel: DeckUtils.deckModel
 

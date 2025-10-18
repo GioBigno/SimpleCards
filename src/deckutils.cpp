@@ -36,23 +36,35 @@ void DeckUtils::loadDeck(const QString& fileName, DeckMode mode)
 {
 	Deck temp = deckFromJson(jsonFromFile(fileName));
 	m_deckModel = std::make_unique<DeckModel>(std::move(temp), mode, this);
+	m_deckFilePath = fileName;
 	emit deckModelChanged();
 }
 
-void DeckUtils::saveDeck(const QString& fileName)
+void DeckUtils::saveLoadedDeck()
 {
-	bool res = jsonToFile(jsonFromDeck(m_deckModel->getDeck()), fileName);
+	if(m_deckFilePath.isEmpty()){
+		qDebug() << "Error, no deck loaded";
+		return;
+	}
+
+	bool res = jsonToFile(jsonFromDeck(m_deckModel->getDeck()), m_deckFilePath);
 
 	if(!res)
 		qDebug() << "Error saving deck to file";
 }
 
-void DeckUtils::deleteDeck(const QString& fileName)
+void DeckUtils::deleteLoadedDeck()
 {
+	if(m_deckFilePath.isEmpty()){
+		qDebug() << "Error, no deck loaded";
+		return;
+	}
+
 	m_deckModel.reset();
 	emit deckModelChanged();
 	//QFile::rename(fileName, fileName+".deleted");
-	QFile::remove(fileName);
+	QFile::remove(m_deckFilePath);
+	m_deckFilePath = "";
 	emit availableDecksChanged();
 }
 
@@ -75,29 +87,27 @@ QString DeckUtils::createEmptyDeckFile()
 	return fileName;
 }
 	
-QString DeckUtils::changeFileName(const QString& filePath, const QString& deckName)
+void DeckUtils::changeLoadedDeckFileName(const QString& deckName)
 {
-	QFileInfo fileInfo(filePath);
+	QFileInfo fileInfo(m_deckFilePath);
 
 	if(!fileInfo.exists())
-		qWarning() << "File does not exist:" << filePath;
+		qWarning() << "File does not exist:" <<m_deckFilePath;
 
 	QString sanitizedName = sanitizeFileName(deckName);
 	QString newFilePath = QString("%1/%2.json")
 				    .arg(fileInfo.absolutePath())
 				    .arg(sanitizedName);
 
-	if(filePath == newFilePath)
-		return filePath;
+	if(m_deckFilePath == newFilePath)
+		return;
 
 	newFilePath = uniqueFileName(std::move(newFilePath));
 
-	QFile file(filePath);
-	if(!QFile::rename(filePath, newFilePath)){
-		return filePath;
-	}else{
+	QFile file(m_deckFilePath);
+	if(QFile::rename(m_deckFilePath, newFilePath)){
 		emit availableDecksChanged();
-		return newFilePath; 
+		m_deckFilePath = newFilePath; 
 	}
 }
 
