@@ -2,9 +2,6 @@
 
 #include <vector>
 #include <map>
-#include <QString>
-#include <QDate>
-#include <ranges>
 #include <span>
 #include <tuple>
 #include "card.h"

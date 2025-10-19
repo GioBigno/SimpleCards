@@ -1,6 +1,4 @@
 #include "card.h"
-#include <cmath>
-#include <algorithm>
 
 Card::Card()
 {}

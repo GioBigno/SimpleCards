@@ -4,9 +4,6 @@
 #include "deck.h"
 #include "card.h"
 #include "deckenums.h"
-#include <QVariant>
-#include <QList>
-#include <QDebug>
 
 class DeckModel : public QAbstractListModel
 {

@@ -1,9 +1,5 @@
 #include "deck.h"
 #include "card.h"
-#include <algorithm>
-#include <random>
-#include <ranges>
-#include <QDebug>
 
 Deck::Deck(){}
 

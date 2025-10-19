@@ -3,10 +3,7 @@
 #include <QObject>
 #include <QQmlEngine>
 #include <QSettings>
-#include <QVariant>
 #include <QtQml/qqmlregistration.h>
-#include <QJsonDocument>
-#include <QJsonObject>
 
 class AppConfig : public QObject
 {

@@ -32,10 +32,6 @@ Rectangle{
 		colorGroup: SystemPalette.Active
 	}
 
-	onHoveredChanged: {
-		console.log("h: " + hovered)
-	}
-
 	radius: 10
 	color: mypalette.base
 	clip: true

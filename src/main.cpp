@@ -1,6 +1,3 @@
-#include <iostream>
-#include <string>
-
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QStandardPaths>
@@ -10,13 +7,11 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonValue>
-#include <QtLogging>
 #include <QFontDatabase>
 #include <QtQml/qqmlregistration.h>
 
 #include "card.h"
 #include "deck.h"
-//#include "deckmanager.h"
 
 bool checkDataDir();
 
@@ -45,22 +40,6 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 	
-
-/*
-	std::vector<std::unique_ptr<QFile>> decksFiles = getDecksFiles();
-	for(auto& deckFile : decksFiles){
-		qDebug() << QFileInfo(deckFile->fileName()).baseName();
-
-		JSonDocument jsonDoc = getJsonDoc(*deckFile);
-		if(jsonDoc.isNull()){
-			qCritical() << "error parsing json";
-			qCritical() << jsonErr.errorString();
-		}
-
-		Deck d = getDeck(jsonDoc);
-		debug_printDeck(d);
-	}
-*/
 	return app.exec();
 }
 
