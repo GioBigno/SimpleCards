@@ -15,12 +15,16 @@ QVariantList DeckUtils::getAvailableDecks() const
 	QDir dataDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
 	QFileInfoList fileList = dataDir.entryInfoList(QStringList("*.json"), QDir::Files);
 
+	std::sort(fileList.begin(), fileList.end(), [](const QFileInfo &a, const QFileInfo &b){
+		return a.lastModified() > b.lastModified();
+	});
+
 	QVariantList ret;
 	ret.reserve(fileList.size());
 	for(const QFileInfo &fileInfo : fileList){
 		QVariantMap map;
-		map["file_path"] = std::move(fileInfo.absoluteFilePath());
-		map["base_name"] = std::move(fileInfo.baseName());
+		map["file_path"] = fileInfo.absoluteFilePath();
+		map["base_name"] = fileInfo.baseName();
 		ret << map;
 	}
 
@@ -48,6 +52,7 @@ void DeckUtils::saveLoadedDeck()
 	}
 
 	bool res = jsonToFile(jsonFromDeck(m_deckModel->getDeck()), m_deckFilePath);
+	emit availableDecksChanged();
 
 	if(!res)
 		qDebug() << "Error saving deck to file";
