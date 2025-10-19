@@ -62,8 +62,8 @@ void DeckUtils::deleteLoadedDeck()
 
 	m_deckModel.reset();
 	emit deckModelChanged();
-	//QFile::rename(fileName, fileName+".deleted");
-	QFile::remove(m_deckFilePath);
+	if(!QFile::moveToTrash(m_deckFilePath))
+		QFile::remove(m_deckFilePath);
 	m_deckFilePath = "";
 	emit availableDecksChanged();
 }
