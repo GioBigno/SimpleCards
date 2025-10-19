@@ -21,8 +21,10 @@ qt_add_qml_module(simplecards
 		includes/deckutils.h
 		includes/deckenums.h
 		includes/deckmodel.h
+		includes/appconfig.h
 		src/deckutils.cpp
 		src/deckmodel.cpp
+		src/appconfig.cpp
 	QML_FILES
 		qml/Main.qml
 		qml/DecksList.qml
@@ -33,6 +35,9 @@ qt_add_qml_module(simplecards
 		qml/Card.qml
 		qml/CardEdit.qml
 		qml/StatsView.qml
+		qml/SettingsView.qml
+		qml/Info.qml
+		qml/CheckBoxEntry.qml
 	RESOURCES
 		assets/SpaceMono-Regular.ttf
 		assets/SpaceMono-Bold.ttf
@@ -50,6 +55,7 @@ qt_add_qml_module(simplecards
 		assets/plus.svg
 		assets/label.svg
 		assets/info.svg
+		assets/settings.svg
 )
 
 target_include_directories(simplecards

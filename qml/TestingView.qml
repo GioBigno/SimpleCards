@@ -50,6 +50,7 @@ ColumnLayout{
 				anchors.right: parent.right
                 		anchors.verticalCenter: parent.verticalCenter
 				anchors.rightMargin: 10
+				visible: AppConfig.cardsCounter
 				text: answered + "/" + deckmodel.size
 				font.bold: true
 				font.pointSize: 20
@@ -134,6 +135,7 @@ ColumnLayout{
 		RoundButton{
 			Layout.preferredWidth: height
 			Layout.alignment: Qt.AlignVCenter
+			visible: AppConfig.hardButton
 			icon.source: "/qt/qml/simplecardsModule/assets/almost.svg"
 			icon.color: hovered ? mypalette.highlight : mypalette.buttonText
 			icon.width: 40

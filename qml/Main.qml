@@ -38,6 +38,9 @@ ApplicationWindow {
 				DeckUtils.loadDeck(filePath, DeckMode.Edit)
 				stack.push(statsComponent);		
 			}
+			onSettings: () => {
+				stack.push(settingsComponent)
+			}
 		}
 	}
 
@@ -90,6 +93,15 @@ ApplicationWindow {
 			onBackBtn: function(){
 				stack.pop()
 				DeckUtils.saveLoadedDeck();
+			}
+		}
+	}
+	
+	Component{
+		id: settingsComponent
+		SettingsView{
+			onBackBtn: function(){
+				stack.pop()
 			}
 		}
 	}

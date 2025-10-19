@@ -7,13 +7,40 @@ ColumnLayout{
 	required property var onOpen
 	required property var onEdit
 	required property var onStats
+	required property var onSettings
 
-	Pane{
+	RowLayout{
+		Layout.preferredWidth: parent.width
 		Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+
+		Item{
+			Layout.fillWidth: true
+			Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
+			RoundButton{
+				id: backBtn
+				anchors.left: parent.left
+				anchors.verticalCenter: parent.verticalCenter
+				anchors.leftMargin: 10
+				icon.source: "/qt/qml/simplecardsModule/assets/settings.svg"
+				icon.color: hovered ? mypalette.highlight : mypalette.buttonText
+				icon.width: 20
+				icon.height: 20
+				flat: true
+				display: AbstractButton.IconOnly
+				onClicked: {onSettings()}
+				HoverHandler {cursorShape: Qt.PointingHandCursor}
+			}
+		}
 		Label{
-			text: "Decks"
+			Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+			text: qsTr("Decks")
 			font.bold: true
 			font.pointSize: 30
+		}
+		Item{
+			Layout.fillWidth: true
+			Layout.preferredWidth: 1
+			Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
 		}
 	}
 

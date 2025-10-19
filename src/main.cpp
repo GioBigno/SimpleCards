@@ -22,6 +22,7 @@ bool checkDataDir();
 
 int main(int argc, char *argv[])
 {
+	QCoreApplication::setOrganizationName("BignoSoft");
 	QCoreApplication::setApplicationName("SimpleCards");
 	QCoreApplication::setApplicationVersion("1.0");	
 	QGuiApplication app(argc, argv);
