@@ -36,12 +36,18 @@ DeckModel* DeckUtils::getDeckModel() const
 	return m_deckModel.get();
 }
 
-void DeckUtils::loadDeck(const QString& fileName, DeckMode mode)
+QString DeckUtils::loadDeck(const QString& fileName, DeckMode mode)
 {
-	Deck temp = deckFromJson(jsonFromFile(fileName));
-	m_deckModel = std::make_unique<DeckModel>(std::move(temp), mode, this);
+	auto result = jsonFromFile(fileName).and_then(deckFromJson);
+	if(!result){
+		qWarning() << result.error();
+		return result.error();
+	}
+
+	m_deckModel = std::make_unique<DeckModel>(std::move(result.value()), mode, this);
 	m_deckFilePath = fileName;
 	emit deckModelChanged();
+	return "";
 }
 
 void DeckUtils::saveLoadedDeck()
@@ -70,6 +76,12 @@ void DeckUtils::deleteLoadedDeck()
 	if(!QFile::moveToTrash(m_deckFilePath))
 		QFile::remove(m_deckFilePath);
 	m_deckFilePath = "";
+	emit availableDecksChanged();
+}
+
+void DeckUtils::deleteDeck(const QString& filePath)
+{
+	QFile::remove(filePath);
 	emit availableDecksChanged();
 }
 
@@ -116,27 +128,25 @@ void DeckUtils::changeLoadedDeckFileName(const QString& deckName)
 	}
 }
 
-QJsonDocument DeckUtils::jsonFromFile(const QString& jsonFilename) const
+std::expected<QJsonDocument, QString> DeckUtils::jsonFromFile(const QString& jsonFilename)
 {
-	//TODO use expected and FP
 	QJsonDocument jsonDoc;
 
 	QFile jsonFile(jsonFilename);
-	if(!jsonFile.open(QIODevice::ReadOnly)){
-		qDebug() << "Error:" << jsonFile.errorString();
-		return jsonDoc;		
-	}
+	if(!jsonFile.open(QIODevice::ReadOnly))
+		return std::unexpected{"Error parsing json: " + jsonFile.errorString()};
 
 	QJsonParseError jsonErr;
 	jsonDoc = QJsonDocument::fromJson(jsonFile.readAll(), &jsonErr);
 	jsonFile.close();
+	if(jsonDoc.isNull())
+		return std::unexpected{"Error parsing json: " + jsonErr.errorString()};
 
 	return jsonDoc;
 }
 
-bool DeckUtils::jsonToFile(const QJsonDocument& doc, const QString& fileName) const
+bool DeckUtils::jsonToFile(const QJsonDocument& doc, const QString& fileName)
 {
-	//TODO use expected and FP
 	QString tempPath = fileName + ".tmp";
 	QFile tempFile(tempPath);
 
@@ -152,60 +162,129 @@ bool DeckUtils::jsonToFile(const QJsonDocument& doc, const QString& fileName) co
 	return QFile::rename(tempPath, fileName);
 }
 
-Deck DeckUtils::deckFromJson(const QJsonDocument& jsonDoc) const
+std::expected<Deck, QString> DeckUtils::deckFromJson(const QJsonDocument& jsonDoc)
 {	
-	//TODO use expected and FP
-	//fields are assumed to be there !!
+	QString prefix("Error parsing json: ");
 
 	QJsonObject deckObj = jsonDoc.object();
-	QString deckName = deckObj.find("deck_name").value().toString();
+	if(deckObj.isEmpty())
+		return std::unexpected{prefix + "main component is not an object"};
 
-	QJsonArray cardsArr = deckObj.value("cards").toArray();
+	QJsonValue deckName_val = deckObj.value("deck_name");
+	if(!deckName_val.isString())
+		return std::unexpected{prefix + "deck_name not found"};
+	
+	QString deckName = deckName_val.toString();
+	if(deckName.isEmpty())
+		return std::unexpected{prefix + "deck_name is not a string"};
+
+	QJsonValue cardsArr_val = deckObj.value("cards");
+	if(!cardsArr_val.isArray())
+		return std::unexpected{prefix + "cards not found"};
+
+	QJsonArray cardsArr = cardsArr_val.toArray();
 	std::vector<Card> cards;
 	cards.reserve(cardsArr.size());
 	
-	for(auto card : cardsArr){
+	for(const auto& card : cardsArr){
 		QJsonObject cardObj = card.toObject();
-		QString question = cardObj.find("question").value().toString();
-		QString answer = cardObj.find("answer").value().toString();
-		QDate creationDate = QDate::fromString(cardObj.find("date_creation").value().toString(), Qt::ISODate);
-		QDate nextReview = QDate::fromString(cardObj.find("date_next_review").value().toString(), Qt::ISODate);
-		double ease = cardObj.find("ease").value().toDouble();
-		size_t interval = cardObj.find("interval").value().toInt();
-		size_t repetition = cardObj.find("repetition").value().toInt();
-		//TODO check values
-		if(creationDate.isNull() || nextReview.isNull()){
-			//DO SOMETHING!!
-		}
+		if(cardObj.isEmpty())
+			return std::unexpected{prefix + "card object is empty"};
 
-		cards.emplace_back(question, answer, creationDate, nextReview, ease, interval, repetition);
+		QJsonValue question_val = cardObj.value("question");
+		if(!question_val.isString())
+			return std::unexpected{prefix + "question is not a string"};
+
+		QString question = question_val.toString();
+
+		QJsonValue answer_val = cardObj.value("answer");
+		if(!answer_val.isString())
+			return std::unexpected{prefix + "answer is not a string"};
+
+		QString answer = answer_val.toString();
+
+		QJsonValue creationDate_val = cardObj.value("date_creation");
+		if(!creationDate_val.isString())
+			return std::unexpected{prefix + "date_creation is not a string"};
+
+		QDate creationDate = QDate::fromString(creationDate_val.toString(), Qt::ISODate);
+		if(!creationDate.isValid())
+			return std::unexpected{prefix + "date_creation is not a valid date"};
+
+		QJsonValue nextReviewDate_val = cardObj.value("date_next_review");
+		if(!nextReviewDate_val.isString())
+			return std::unexpected{prefix + "date_next_review is not a string"};
+
+		QDate nextReviewDate = QDate::fromString(nextReviewDate_val.toString(), Qt::ISODate);
+		if(!nextReviewDate.isValid())
+			return std::unexpected{prefix + "date_next_review is not a valid date"};
+
+		QJsonValue ease_val = cardObj.value("ease");
+		if(!ease_val.isDouble())
+			return std::unexpected{prefix + "ease is not a double"};
+
+		double ease = ease_val.toDouble();
+
+		QJsonValue interval_val = cardObj.value("interval");
+		if(!interval_val.isDouble())
+			return std::unexpected{prefix + "interval is not an int"};
+
+		size_t interval = interval_val.toInt();
+
+		QJsonValue repetitions_val = cardObj.value("repetitions");
+		if(!repetitions_val.isDouble())
+			return std::unexpected{prefix + "repetitions is not an int"};
+
+		size_t repetitions = repetitions_val.toInt();
+
+		cards.emplace_back(question, answer, creationDate, nextReviewDate, ease, interval, repetitions);
 	}
 
-	QJsonArray statsArr = deckObj.value("stats").toArray();
+	QJsonValue statsArr_val = deckObj.value("stats");
+	if(!statsArr_val.isArray())
+		return std::unexpected{prefix + "stats not found"};
+
+	QJsonArray statsArr = statsArr_val.toArray();
 	std::map<QDate, std::tuple<int, int, int>> master_history;
 	
-	for(auto log : statsArr){
+	for(const auto& log : statsArr){
 		QJsonObject logObj = log.toObject();
-		QDate logDate = QDate::fromString(logObj.find("date").value().toString(), Qt::ISODate);
-		int n_new = logObj.find("new").value().toInt();
-		int n_learning = logObj.find("learning").value().toInt();
-		int n_mastered = logObj.find("mastered").value().toInt();
-		
-		//TODO check values
-		if(logDate.isNull()){
-			//DO SOMETHING!!
-		}
+		if(logObj.isEmpty())
+			return std::unexpected{prefix + "stat object is empty"};
+
+		QJsonValue logDate_val = logObj.value("date");
+		if(!logDate_val.isString())
+			return std::unexpected{prefix + "date not found"};
+
+		QDate logDate = QDate::fromString(logDate_val.toString(), Qt::ISODate);
+		if(!logDate.isValid())
+			return std::unexpected{prefix + "date is not a valid date"};
+
+		QJsonValue n_new_val = logObj.value("new");
+		if(!n_new_val.isDouble())
+			return std::unexpected{prefix + "new is not an int"};
+
+		int n_new = n_new_val.toInt();
+
+		QJsonValue n_learning_val = logObj.value("learning");
+		if(!n_learning_val.isDouble())
+			return std::unexpected{prefix + "learning is not an int"};
+
+		int n_learning = n_learning_val.toInt();
+
+		QJsonValue n_mastered_val = logObj.value("mastered");
+		if(!n_mastered_val.isDouble())
+			return std::unexpected{prefix + "mastered is not an int"};
+
+		int n_mastered = n_mastered_val.toInt();
 
 		master_history[logDate] = std::make_tuple(n_new, n_learning, n_mastered);
 	}
-	
 	return Deck(std::move(deckName), std::move(cards), master_history);
 }
 
-QJsonDocument DeckUtils::jsonFromDeck(const Deck& deck) const
+QJsonDocument DeckUtils::jsonFromDeck(const Deck& deck)
 {
-	//TODO use expected and FP
-
 	QJsonObject mainObj;
 	mainObj.insert("deck_name", deck.getName());
 	

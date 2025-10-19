@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import QtQuick.VectorImage
 
 ColumnLayout{
@@ -27,6 +28,12 @@ ColumnLayout{
 		colorGroup: SystemPalette.Active
 	}
 
+	MessageDialog{
+		id: invalidDeckNameDialog
+		buttons: MessageDialog.Ok
+		text: "Invalid deck's name."
+	}
+
 	RowLayout{
 		z: 1
 		Layout.preferredWidth: parent.width
@@ -48,8 +55,12 @@ ColumnLayout{
 				flat: true
 				display: AbstractButton.IconOnly
 				onClicked: {
-					changeTitle(titleInput.text)
-					onBackBtn()
+					if(titleInput.text === ""){
+						invalidDeckNameDialog.open()
+					}else{
+						changeTitle(titleInput.text)
+						onBackBtn()
+					}
 				}
 				HoverHandler {cursorShape: Qt.PointingHandCursor}
 			}
@@ -164,5 +175,4 @@ ColumnLayout{
 			}	
 		}
 	}
-	
 }

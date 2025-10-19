@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <expected>
 #include "deck.h"
 #include "deckmodel.h"
 #include "deckenums.h"
@@ -27,9 +28,10 @@ signals:
 public:
 	QVariantList getAvailableDecks() const;
 	DeckModel* getDeckModel() const;
-	Q_INVOKABLE void loadDeck(const QString& fileName, DeckMode mode);
+	Q_INVOKABLE QString loadDeck(const QString& fileName, DeckMode mode);
 	Q_INVOKABLE void saveLoadedDeck();
 	Q_INVOKABLE void deleteLoadedDeck();
+	Q_INVOKABLE void deleteDeck(const QString& filePath);
 	Q_INVOKABLE QString createEmptyDeckFile();
 	Q_INVOKABLE void changeLoadedDeckFileName(const QString& deckName);
 
@@ -39,10 +41,10 @@ private:
 	QString m_deckFilePath = "";
 	std::unique_ptr<DeckModel> m_deckModel;
 	
-	QJsonDocument jsonFromFile(const QString& jsonFilename) const; //exception??
-	bool jsonToFile(const QJsonDocument& jsonDoc, const QString& fileName) const; //exception??
-	Deck deckFromJson(const QJsonDocument& jsonDoc) const; //exception?
-	QJsonDocument jsonFromDeck(const Deck& deck) const; //exception??
+	static std::expected<QJsonDocument, QString> jsonFromFile(const QString& jsonFilename);
+	static bool jsonToFile(const QJsonDocument& jsonDoc, const QString& fileName);
+	static std::expected<Deck, QString> deckFromJson(const QJsonDocument& jsonDoc);
+	static QJsonDocument jsonFromDeck(const Deck& deck);
 	QString sanitizeFileName(QString str) const;
 	QString uniqueFileName(QString str) const;
 };
