@@ -13,6 +13,18 @@ ApplicationWindow {
 
 	font.family: "Space Mono"
 
+	Component.onCompleted: {
+		if(AppConfig.rememberSize){
+			let s = AppConfig.windowSize
+			width = s.width
+			height = s.height
+		}
+	}
+
+	Component.onDestruction: {
+		AppConfig.windowSize = Qt.size(width, height)
+	}
+
 	SystemPalette{
 		id: mypalette
 		colorGroup: SystemPalette.Active

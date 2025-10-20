@@ -27,7 +27,28 @@ bool AppConfig::getCardsCounter()
 
 void AppConfig::setCardsCounter(bool opt)
 {
-
 	settings.setValue("testing/cards_counter", opt);
 	emit cardsCounterChanged();
+}
+
+bool AppConfig::getRememberSize()
+{
+	return settings.value("window/remember_size", false).toBool();
+}
+
+void AppConfig::setRememberSize(bool opt)
+{
+	settings.setValue("window/remember_size", opt);
+	emit rememberSizeChanged();
+}
+
+QSize AppConfig::getWindowSize()
+{
+	return settings.value("window/size", QSize(800, 550)).toSize();
+}
+
+void AppConfig::setWindowSize(const QSize& s)
+{
+	settings.setValue("window/size", s);
+	emit windowSizeChanged();
 }

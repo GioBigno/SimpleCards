@@ -46,6 +46,27 @@ ColumnLayout{
 		Layout.fillWidth: true
 		Layout.alignment: Qt.AlignLeft
 		Layout.leftMargin: 30
+		text: "General"
+		font.bold: true
+		font.pointSize: 18
+	}
+	
+	CheckBoxEntry{
+		Layout.fillWidth: true
+		Layout.alignment: Qt.AlignLeft
+		Layout.leftMargin: 30
+		text: qsTr("Remember window size")
+		toolTipText: qsTr("Restore window size on startup")
+		startingChecked: AppConfig.rememberSize
+		onCheckedChanged: {
+			AppConfig.rememberSize = checked
+		}
+	}
+
+	Label{
+		Layout.fillWidth: true
+		Layout.alignment: Qt.AlignLeft
+		Layout.leftMargin: 30
 		text: "Testing"
 		font.bold: true
 		font.pointSize: 18
@@ -56,7 +77,7 @@ ColumnLayout{
 		Layout.alignment: Qt.AlignLeft
 		Layout.leftMargin: 30
 		text: qsTr("\"hard\" button")
-		toolTipText: qsTr("Enables a third button when selecting the result of retrieving.\nThis should be used for correct but very difficult retrieves")
+		toolTipText: qsTr("Enable a third button when selecting the result of retrieving.\nThis should be used for correct but very difficult retrieves")
 		startingChecked: AppConfig.hardButton
 		onCheckedChanged: {
 			AppConfig.hardButton = checked
@@ -68,7 +89,7 @@ ColumnLayout{
 		Layout.alignment: Qt.AlignLeft
 		Layout.leftMargin: 30
 		text: qsTr("card counter")
-		toolTipText: qsTr("Shows the number of cards tested and the number of cards to test")
+		toolTipText: qsTr("Show the number of cards tested and the number of cards to test")
 		startingChecked: AppConfig.cardsCounter
 		onCheckedChanged: {
 			AppConfig.cardsCounter = checked
