@@ -10,7 +10,7 @@ AppConfig::AppConfig(QObject *parent)
 
 bool AppConfig::getHardButton()
 {
-	return settings.value("testing/hard_button", true).toBool();
+	return settings.value("testing/hard_button", hardButton_default).toBool();
 }
 
 void AppConfig::setHardButton(bool opt)
@@ -21,7 +21,7 @@ void AppConfig::setHardButton(bool opt)
 
 bool AppConfig::getCardsCounter()
 {
-	return settings.value("testing/cards_counter", true).toBool();
+	return settings.value("testing/cards_counter", cardsCounter_default).toBool();
 }
 
 void AppConfig::setCardsCounter(bool opt)
@@ -32,7 +32,7 @@ void AppConfig::setCardsCounter(bool opt)
 
 bool AppConfig::getRememberSize()
 {
-	return settings.value("window/remember_size", false).toBool();
+	return settings.value("window/remember_size", rememberSize_default).toBool();
 }
 
 void AppConfig::setRememberSize(bool opt)
@@ -43,7 +43,7 @@ void AppConfig::setRememberSize(bool opt)
 
 QSize AppConfig::getWindowSize()
 {
-	return settings.value("window/size", QSize(800, 550)).toSize();
+	return settings.value("window/size", windowSize_default).toSize();
 }
 
 void AppConfig::setWindowSize(const QSize& s)
@@ -54,7 +54,7 @@ void AppConfig::setWindowSize(const QSize& s)
 
 bool AppConfig::getConfirmDeleteDeck()
 {
-	return settings.value("editing/confirm_delete_deck", true).toBool();
+	return settings.value("editing/confirm_delete_deck", confirmDeleteDeck_default).toBool();
 }
 
 void AppConfig::setConfirmDeleteDeck(bool opt)
@@ -65,7 +65,7 @@ void AppConfig::setConfirmDeleteDeck(bool opt)
 
 bool AppConfig::getConfirmDeleteCard()
 {
-	return settings.value("editing/confirm_delete_card", false).toBool();
+	return settings.value("editing/confirm_delete_card", confirmDeleteCard_default).toBool();
 }
 
 void AppConfig::setConfirmDeleteCard(bool opt)

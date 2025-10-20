@@ -19,6 +19,13 @@ class AppConfig : public QObject
 	Q_PROPERTY(bool confirmDeleteDeck READ getConfirmDeleteDeck WRITE setConfirmDeleteDeck NOTIFY confirmDeleteDeckChanged);
 	Q_PROPERTY(bool confirmDeleteCard READ getConfirmDeleteCard WRITE setConfirmDeleteCard NOTIFY confirmDeleteCardChanged);
 
+	const bool hardButton_default = true;
+	const bool cardsCounter_default = true;
+	const bool rememberSize_default = false;
+	const QSize windowSize_default = QSize(800, 550);
+	const bool confirmDeleteDeck_default = true;
+	const bool confirmDeleteCard_default = false;
+
 signals:
 	void hardButtonChanged();
 	void cardsCounterChanged();
