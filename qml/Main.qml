@@ -126,7 +126,8 @@ ApplicationWindow {
 			onBackBtn: function(){
 				stack.pop()
 			}
-			onDeleteCard: function(){
+			onDeleteCard: function(idx){
+				deckmodel.deleteCardAt(idx)
 				stack.pop()
 			}
 		}

@@ -15,7 +15,6 @@ bool AppConfig::getHardButton()
 
 void AppConfig::setHardButton(bool opt)
 {
-
 	settings.setValue("testing/hard_button", opt);
 	emit hardButtonChanged();
 }
@@ -51,4 +50,26 @@ void AppConfig::setWindowSize(const QSize& s)
 {
 	settings.setValue("window/size", s);
 	emit windowSizeChanged();
+}
+
+bool AppConfig::getConfirmDeleteDeck()
+{
+	return settings.value("editing/confirm_delete_deck", true).toBool();
+}
+
+void AppConfig::setConfirmDeleteDeck(bool opt)
+{
+	settings.setValue("editing/confirm_delete_deck", opt);
+	emit confirmDeleteDeckChanged();
+}
+
+bool AppConfig::getConfirmDeleteCard()
+{
+	return settings.value("editing/confirm_delete_card", false).toBool();
+}
+
+void AppConfig::setConfirmDeleteCard(bool opt)
+{
+	settings.setValue("editing/confirm_delete_card", opt);
+	emit confirmDeleteCardChanged();
 }

@@ -34,6 +34,19 @@ ColumnLayout{
 		text: "Invalid deck's name."
 	}
 
+	MessageDialog{
+		id: deleteDeckDialog
+		buttons: MessageDialog.Yes | MessageDialog.No
+		text: "Delete \"" + (deckmodel ? deckmodel.deckName : "") + "\"?"
+		onButtonClicked: function (button, role){
+        		switch(button){
+        			case MessageDialog.Yes:
+            			onDeleteDeck()
+            		break;
+			}
+    		}
+	}
+
 	RowLayout{
 		z: 1
 		Layout.preferredWidth: parent.width
@@ -94,7 +107,11 @@ ColumnLayout{
 				display: AbstractButton.IconOnly
 				onClicked: {
 					changeTitle(titleInput.text)
-					onDeleteDeck()
+					if(AppConfig.confirmDeleteDeck){
+						deleteDeckDialog.open()
+					}else{
+						onDeleteDeck()
+					}
 				}
 				HoverHandler {cursorShape: Qt.PointingHandCursor}
 				ToolTip.visible: hovered

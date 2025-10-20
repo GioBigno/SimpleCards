@@ -88,11 +88,44 @@ ColumnLayout{
 		Layout.fillWidth: true
 		Layout.alignment: Qt.AlignLeft
 		Layout.leftMargin: 30
-		text: qsTr("card counter")
+		text: qsTr("Card counter")
 		toolTipText: qsTr("Show the number of cards tested and the number of cards to test")
 		startingChecked: AppConfig.cardsCounter
 		onCheckedChanged: {
 			AppConfig.cardsCounter = checked
+		}
+	}
+	
+	Label{
+		Layout.fillWidth: true
+		Layout.alignment: Qt.AlignLeft
+		Layout.leftMargin: 30
+		text: "Editing"
+		font.bold: true
+		font.pointSize: 18
+	}
+	
+	CheckBoxEntry{
+		Layout.fillWidth: true
+		Layout.alignment: Qt.AlignLeft
+		Layout.leftMargin: 30
+		text: qsTr("Ask for confirmation before deleting a deck")
+		toolTipText: qsTr("Asks for confirmation before deleting a deck")
+		startingChecked: AppConfig.confirmDeleteDeck
+		onCheckedChanged: {
+			AppConfig.confirmDeleteDeck = checked
+		}
+	}
+	
+	CheckBoxEntry{
+		Layout.fillWidth: true
+		Layout.alignment: Qt.AlignLeft
+		Layout.leftMargin: 30
+		text: qsTr("Ask for confirmation before deleting a card")
+		toolTipText: qsTr("Asks for confirmation before deleting a card")
+		startingChecked: AppConfig.confirmDeleteCard
+		onCheckedChanged: {
+			AppConfig.confirmDeleteCard = checked
 		}
 	}
 

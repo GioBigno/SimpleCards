@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 
 ColumnLayout{
 	id: editingView
@@ -10,6 +11,19 @@ ColumnLayout{
 
 	property var deckmodel: DeckUtils.deckModel
 	required property int currentIdx
+	
+	MessageDialog{
+		id: deleteCardDialog
+		buttons: MessageDialog.Yes | MessageDialog.No
+		text: "Delete the card?"
+		onButtonClicked: function (button, role){
+        		switch(button){
+        			case MessageDialog.Yes:
+            			onDeleteCard(currentIdx)
+            		break;
+			}
+    		}
+	}
 
 	RowLayout{
 		Layout.preferredWidth: parent.width
@@ -54,8 +68,10 @@ ColumnLayout{
 				flat: true
 				display: AbstractButton.IconOnly
 				onClicked: {
-					deckmodel.deleteCardAt(currentIdx)
-					onDeleteCard()
+					if(AppConfig.confirmDeleteCard)
+						deleteCardDialog.open()	
+					else
+						onDeleteCard(currentIdx)
 				}
 				HoverHandler {cursorShape: Qt.PointingHandCursor}
 				ToolTip.visible: hovered

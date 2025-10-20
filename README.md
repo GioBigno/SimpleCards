@@ -5,6 +5,5 @@ Flashcards software for studying using spaced repetition and recall testing tech
 icons: https://www.svgrepo.com/collection/chunk-16px-thick-interface-icons/
 
 todo:
-- settings:
-    "ask confirm when deleting decks"
-    "ask confirm when deleting cards"
+- refactor:
+    use constants in AppConfig
