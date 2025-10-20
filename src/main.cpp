@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 	engine.loadFromModule("simplecardsModule", "Main");
 	
 	if(!checkDataDir()){
-		qCritical() << "cannot use dataDir:" << QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+		qCritical() << "[main] cannot use dataDir:" << QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
 		return -1;
 	}
 	
@@ -47,7 +47,7 @@ bool checkDataDir()
 {
 	QDir dataDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
 	if (!dataDir.mkpath(dataDir.absolutePath())) {
-		qDebug() << "Failed to create directory:" << dataDir;
+		qCritical() << "[main] Failed to create directory:" << dataDir;
 		return false;
 	}
 	return true;

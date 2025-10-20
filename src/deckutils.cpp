@@ -40,7 +40,7 @@ QString DeckUtils::loadDeck(const QString& fileName, DeckMode mode)
 {
 	auto result = jsonFromFile(fileName).and_then(deckFromJson);
 	if(!result){
-		qWarning() << result.error();
+		qWarning() << "[deckutils]" << result.error();
 		return result.error();
 	}
 
@@ -53,7 +53,7 @@ QString DeckUtils::loadDeck(const QString& fileName, DeckMode mode)
 void DeckUtils::saveLoadedDeck()
 {
 	if(m_deckFilePath.isEmpty()){
-		qDebug() << "Error, no deck loaded";
+		qCritical() << "[deckutils] Error, no deck loaded";
 		return;
 	}
 
@@ -61,13 +61,13 @@ void DeckUtils::saveLoadedDeck()
 	emit availableDecksChanged();
 
 	if(!res)
-		qDebug() << "Error saving deck to file";
+		qCritical() << "[deckutils] Error saving deck to file";
 }
 
 void DeckUtils::deleteLoadedDeck()
 {
 	if(m_deckFilePath.isEmpty()){
-		qDebug() << "Error, no deck loaded";
+		qCritical() << "[deckutils] Error, no deck loaded";
 		return;
 	}
 
@@ -98,7 +98,7 @@ QString DeckUtils::createEmptyDeckFile()
 	Deck emptyDeck(deckName);
 	
 	if(!jsonToFile(jsonFromDeck(emptyDeck), fileName))
-		qDebug() << "Error saving deck to file";
+		qCritical() << "[deckutils] Error saving deck to file";
 
 	emit availableDecksChanged();
 	return fileName;
@@ -109,7 +109,7 @@ void DeckUtils::changeLoadedDeckFileName(const QString& deckName)
 	QFileInfo fileInfo(m_deckFilePath);
 
 	if(!fileInfo.exists())
-		qWarning() << "File does not exist:" <<m_deckFilePath;
+		qCritical() << "[deckutils] File does not exist:" <<m_deckFilePath;
 
 	QString sanitizedName = sanitizeFileName(deckName);
 	QString newFilePath = QString("%1/%2.json")
@@ -151,7 +151,7 @@ bool DeckUtils::jsonToFile(const QJsonDocument& doc, const QString& fileName)
 	QFile tempFile(tempPath);
 
 	if(!tempFile.open(QIODevice::WriteOnly)){
-		qDebug() << "Error: " << tempFile.errorString();
+		qCritical() << "[deckutils] Error: " << tempFile.errorString();
 		return false;
 	}
 
