@@ -1,0 +1,40 @@
+{
+    "cards": [
+        {
+            "answer": "42",
+            "date_creation": "2025-10-22",
+            "date_next_review": "2025-10-22",
+            "ease": 2,
+            "interval": 1,
+            "question": "What is the answer to life, the universe, and everything?",
+            "repetitions": 0
+        },
+        {
+            "answer": "Actively trying to remember information (like using flashcards) instead of passively reading it",
+            "date_creation": "2025-10-22",
+            "date_next_review": "2025-10-22",
+            "ease": 2,
+            "interval": 1,
+            "question": "What is active recall?",
+            "repetitions": 0
+        },
+        {
+            "answer": "A learning technique where you review cards at increasing intervals to boost long-term memory",
+            "date_creation": "2025-10-22",
+            "date_next_review": "2025-10-22",
+            "ease": 2,
+            "interval": 1,
+            "question": "What is spaced repetition?",
+            "repetitions": 0
+        }
+    ],
+    "deck_name": "Example",
+    "stats": [
+        {
+            "date": "2025-10-22",
+            "learning": 0,
+            "mastered": 0,
+            "new": 3
+        }
+    ]
+}

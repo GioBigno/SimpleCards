@@ -9,14 +9,19 @@
 #include <QJsonValue>
 #include <QFontDatabase>
 #include <QtQml/qqmlregistration.h>
-
 #include "card.h"
 #include "deck.h"
+#include "appconfig.h"
 
 bool checkDataDir();
 
 int main(int argc, char *argv[])
 {
+	if(!checkDataDir()){
+		qCritical() << "[main] cannot use dataDir:" << QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+		return -1;
+	}
+
 	QCoreApplication::setOrganizationName("BignoSoft");
 	QCoreApplication::setApplicationName("SimpleCards");
 	QCoreApplication::setApplicationVersion("1.0");	
@@ -25,6 +30,13 @@ int main(int argc, char *argv[])
 	QFontDatabase::addApplicationFont(":/qt/qml/simplecardsModule/assets/SpaceMono-Regular.ttf");
 	QFontDatabase::addApplicationFont(":/qt/qml/simplecardsModule/assets/SpaceMono-Bold.ttf");
 	QFontDatabase::addApplicationFont(":/qt/qml/simplecardsModule/assets/SpaceMono-Italic.ttf");
+		
+	QSettings settings;
+	if(settings.value("utils/first_opening", true).toBool()){
+		settings.setValue("utils/first_opening", false);
+		QDir dataDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+		QFile::copy(":qt/qml/simplecardsModule/example_decks/Example.json", dataDir.absolutePath()+"/Example.json");
+	}
 
 	QQmlApplicationEngine engine;
 	QObject::connect(
@@ -34,12 +46,6 @@ int main(int argc, char *argv[])
       	[]() { QCoreApplication::exit(-1); },
       	Qt::QueuedConnection);
 	engine.loadFromModule("simplecardsModule", "Main");
-	
-	if(!checkDataDir()){
-		qCritical() << "[main] cannot use dataDir:" << QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-		return -1;
-	}
-	
 	return app.exec();
 }
 
