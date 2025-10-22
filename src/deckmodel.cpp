@@ -20,10 +20,6 @@ DeckModel::DeckModel(Deck deck, DeckMode mode, QObject *parent)
 	}else{
 		m_size = m_deck.size();
 	}
-
-	emit deckNameChanged();
-	emit sizeChanged();
-	emit statsHistoryChanged();
 }
 
 QString DeckModel::getDeckName() const

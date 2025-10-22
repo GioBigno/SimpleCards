@@ -21,7 +21,7 @@ QVariantList DeckUtils::getAvailableDecks() const
 
 	QVariantList ret;
 	ret.reserve(fileList.size());
-	for(const QFileInfo &fileInfo : fileList){
+    for(const QFileInfo &fileInfo : std::as_const(fileList)){
 		QVariantMap map;
 		map["file_path"] = fileInfo.absoluteFilePath();
 		map["base_name"] = fileInfo.baseName();
@@ -91,8 +91,8 @@ QString DeckUtils::createEmptyDeckFile()
 	QDir dataDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
 	
 	QString fileName = QString("%1/%2.json")
-				 .arg(dataDir.absolutePath())
-				 .arg(sanitizeFileName(deckName));
+                 .arg(dataDir.absolutePath(),
+                      sanitizeFileName(deckName));
 	fileName = uniqueFileName(std::move(fileName));
 
 	Deck emptyDeck(deckName);
@@ -113,8 +113,8 @@ void DeckUtils::changeLoadedDeckFileName(const QString& deckName)
 
 	QString sanitizedName = sanitizeFileName(deckName);
 	QString newFilePath = QString("%1/%2.json")
-				    .arg(fileInfo.absolutePath())
-				    .arg(sanitizedName);
+                    .arg(fileInfo.absolutePath(),
+                         sanitizedName);
 
 	if(m_deckFilePath == newFilePath)
 		return;
@@ -186,7 +186,7 @@ std::expected<Deck, QString> DeckUtils::deckFromJson(const QJsonDocument& jsonDo
 	std::vector<Card> cards;
 	cards.reserve(cardsArr.size());
 	
-	for(const auto& card : cardsArr){
+    for(const auto& card : std::as_const(cardsArr)){
 		QJsonObject cardObj = card.toObject();
 		if(cardObj.isEmpty())
 			return std::unexpected{prefix + "card object is empty"};
@@ -247,7 +247,7 @@ std::expected<Deck, QString> DeckUtils::deckFromJson(const QJsonDocument& jsonDo
 	QJsonArray statsArr = statsArr_val.toArray();
 	std::map<QDate, std::tuple<int, int, int>> master_history;
 	
-	for(const auto& log : statsArr){
+    for(const auto& log : std::as_const(statsArr)){
 		QJsonObject logObj = log.toObject();
 		if(logObj.isEmpty())
 			return std::unexpected{prefix + "stat object is empty"};
@@ -340,9 +340,9 @@ QString DeckUtils::uniqueFileName(QString str) const
 
 	while(QFile::exists(str)){
 		str = QString("%1/%2(%3)")
-			.arg(dirPath)
-			.arg(baseName)
-			.arg(counter);
+            .arg(dirPath,
+                 baseName)
+            .arg(counter);
 
 		if(!extension.isEmpty())
 			str += "." + extension;
