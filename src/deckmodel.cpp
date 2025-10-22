@@ -18,7 +18,6 @@ DeckModel::DeckModel(Deck deck, DeckMode mode, QObject *parent)
 		static std::mt19937 gen(rd());
 		std::shuffle(temp.begin(), subrange.begin(), gen);
 	}else{
-		//TODO order by creation date (?)
 		m_size = m_deck.size();
 	}
 
