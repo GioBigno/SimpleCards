@@ -9,6 +9,8 @@ Rectangle{
 	property string answer: ""
 	required property var updateQuestion
 	required property var updateAnswer
+	property string modifiedQuestion: questionTextArea.text
+	property string modifiedAnswer: answerTextArea.text
 
 	property bool revealed: false
 
@@ -31,6 +33,7 @@ Rectangle{
 			Layout.fillHeight: true
 			Layout.alignment: Qt.AlignCenter
 			TextArea{
+				id: questionTextArea
 				horizontalAlignment: Text.AlignHCenter
 				verticalAlignment: Text.AlignVCenter
 				antialiasing: true
@@ -48,6 +51,7 @@ Rectangle{
 			Layout.fillHeight: true
 			Layout.alignment: Qt.AlignCenter
 			TextArea{
+				id: answerTextArea
 				horizontalAlignment: Text.AlignHCenter
 				verticalAlignment: Text.AlignVCenter
 				antialiasing: true

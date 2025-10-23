@@ -44,7 +44,13 @@ ColumnLayout{
 				icon.height: 20
 				flat: true
 				display: AbstractButton.IconOnly
-				onClicked: {onBackBtn()}
+				onClicked: {
+					if(card.modifiedQuestion === "" && card.modifiedAnswer === ""){
+						onDeleteCard(currentIdx)
+					}else{
+						onBackBtn()
+					}
+				}
 				HoverHandler {cursorShape: Qt.PointingHandCursor}
 			}
 		}
