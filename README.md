@@ -1,5 +1,5 @@
 <div align="center">
-    <img width="364" height="256" alt="appicon" src="https://github.com/user-attachments/assets/54eb478c-6f00-426d-adf3-40c58737fa93" />
+    <img width="264" height="156" alt="appicon" src="https://github.com/user-attachments/assets/54eb478c-6f00-426d-adf3-40c58737fa93" />
     <br/>
     <h1>SimpleCards</h1>
     <h3>Minimal flashcards software for studying using spaced repetition technique.</h3>
