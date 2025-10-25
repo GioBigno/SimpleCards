@@ -20,7 +20,7 @@ Rectangle{
 	}
 
 	radius: 10
-	color: mypalette.base
+	color: mypalette.alternateBase
 	clip: true
 
 	ColumnLayout{
