@@ -17,10 +17,6 @@ bool checkDataDir();
 
 int main(int argc, char *argv[])
 {
-	if(!checkDataDir()){
-		qCritical() << "[main] cannot use dataDir:" << QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-		return -1;
-	}
 
 	QCoreApplication::setOrganizationName("BignoSoft");
 	QCoreApplication::setApplicationName("SimpleCards");
@@ -30,6 +26,11 @@ int main(int argc, char *argv[])
 	QFontDatabase::addApplicationFont(":/qt/qml/simplecardsModule/assets/SpaceMono-Regular.ttf");
 	QFontDatabase::addApplicationFont(":/qt/qml/simplecardsModule/assets/SpaceMono-Bold.ttf");
 	QFontDatabase::addApplicationFont(":/qt/qml/simplecardsModule/assets/SpaceMono-Italic.ttf");
+	
+	if(!checkDataDir()){
+		qCritical() << "[main] cannot use dataDir:" << QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+		return -1;
+	}
 		
 	QSettings settings;
 	if(settings.value("utils/first_opening", true).toBool()){
