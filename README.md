@@ -35,3 +35,6 @@ AppImage is available [here](https://github.com/GioBigno/SimpleCards/releases)
     ```bash
     cmake --install . --prefix <custom/installation/prefix>
     ```
+
+# Extra
+icons: https://www.svgrepo.com/collection/chunk-16px-thick-interface-icons
