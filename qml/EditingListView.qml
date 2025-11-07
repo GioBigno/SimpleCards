@@ -141,7 +141,7 @@ ColumnLayout{
 			Rectangle{
 				Layout.preferredWidth: 300
 				Layout.preferredHeight: 200
-				color: mypalette.alternateBase
+				color: mypalette.window
 				radius: 10
 				
 				Label{
@@ -184,7 +184,7 @@ ColumnLayout{
 						HoverHandler{
 							cursorShape: Qt.PointingHandCursor
 							onHoveredChanged: {
-								card.color = hovered ? mypalette.alternateBase : mypalette.base
+								card.color = hovered ? mypalette.highlight : mypalette.alternateBase
 							}
 						}
 					}

@@ -80,7 +80,7 @@ ColumnLayout{
 			onHoveredChanged:{ contentItem.color = hovered ? mypalette.highlight : mypalette.buttonText}
 			HoverHandler {cursorShape: Qt.PointingHandCursor}
 			background: Rectangle {
-            		color: newDeckBtn.hovered ? mypalette.alternateBase : mypalette.base
+            		color: newDeckBtn.hovered ? mypalette.alternateBase : mypalette.button
             		radius: 4
         		}
 			onClicked: {

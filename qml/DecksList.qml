@@ -18,7 +18,7 @@ ListView{
 	rightMargin: 10
 
 	delegate: Rectangle{
-		color: index%2 == 0 ? mypalette.base : mypalette.alternateBase
+		color: mypalette.alternateBase
 		height: label.height
 		anchors.left: parent.left
 		anchors.right: parent.right
