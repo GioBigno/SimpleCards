@@ -15,6 +15,7 @@ class AppConfig : public QObject
 	Q_PROPERTY(bool hardButton READ getHardButton WRITE setHardButton NOTIFY hardButtonChanged);
 	Q_PROPERTY(bool cardsCounter READ getCardsCounter WRITE setCardsCounter NOTIFY cardsCounterChanged);
 	Q_PROPERTY(bool rememberSize READ getRememberSize WRITE setRememberSize NOTIFY rememberSizeChanged);
+	Q_PROPERTY(bool windowMaximized READ getWindowMaximized WRITE setWindowMaximized NOTIFY windowMaximizedChanged);
 	Q_PROPERTY(QSize windowSize READ getWindowSize WRITE setWindowSize NOTIFY windowSizeChanged);
 	Q_PROPERTY(bool confirmDeleteDeck READ getConfirmDeleteDeck WRITE setConfirmDeleteDeck NOTIFY confirmDeleteDeckChanged);
 	Q_PROPERTY(bool confirmDeleteCard READ getConfirmDeleteCard WRITE setConfirmDeleteCard NOTIFY confirmDeleteCardChanged);
@@ -22,6 +23,7 @@ class AppConfig : public QObject
 	const bool hardButton_default = true;
 	const bool cardsCounter_default = true;
 	const bool rememberSize_default = false;
+	const bool windowMaximized_default = false;
 	const QSize windowSize_default = QSize(800, 550);
 	const bool confirmDeleteDeck_default = true;
 	const bool confirmDeleteCard_default = false;
@@ -30,6 +32,7 @@ signals:
 	void hardButtonChanged();
 	void cardsCounterChanged();
 	void rememberSizeChanged();
+	void windowMaximizedChanged();
 	void windowSizeChanged();
 	void confirmDeleteDeckChanged();
 	void confirmDeleteCardChanged();
@@ -40,12 +43,14 @@ public:
 	bool getHardButton();
 	bool getCardsCounter();
 	bool getRememberSize();
+	bool getWindowMaximized();
 	QSize getWindowSize();
 	bool getConfirmDeleteDeck();
 	bool getConfirmDeleteCard();
 	void setHardButton(bool opt);
 	void setCardsCounter(bool opt);
 	void setRememberSize(bool opt);
+	void setWindowMaximized(bool opt);
 	void setWindowSize(const QSize& s);
 	void setConfirmDeleteDeck(bool opt);
 	void setConfirmDeleteCard(bool opt);

@@ -41,6 +41,17 @@ void AppConfig::setRememberSize(bool opt)
 	emit rememberSizeChanged();
 }
 
+bool AppConfig::getWindowMaximized()
+{
+	return settings.value("window/maximized", windowMaximized_default).toBool();
+}
+
+void AppConfig::setWindowMaximized(bool opt)
+{
+	settings.setValue("window/maximized", opt);
+	emit windowMaximizedChanged();
+}
+
 QSize AppConfig::getWindowSize()
 {
 	return settings.value("window/size", windowSize_default).toSize();

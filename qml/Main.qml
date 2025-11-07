@@ -1,4 +1,5 @@
 import QtQuick
+//import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
@@ -14,15 +15,29 @@ ApplicationWindow {
 	font.family: "Space Mono"
 
 	Component.onCompleted: {
-		if(AppConfig.rememberSize){
+		if(!AppConfig.rememberSize)
+			return;
+
+		if(AppConfig.windowMaximized){
+			visibility = Window.Maximized
+		}else{
 			let s = AppConfig.windowSize
 			width = s.width
 			height = s.height
 		}
 	}
 
-	Component.onDestruction: {
-		AppConfig.windowSize = Qt.size(width, height)
+	onClosing: {
+		
+		if(!AppConfig.rememberSize)
+			return;
+
+		if(visibility === Window.Maximized){
+			AppConfig.windowMaximized = true;
+		}else{
+			AppConfig.windowMaximized = false;
+			AppConfig.windowSize = Qt.size(width, height)
+		}
 	}
 
 	SystemPalette{
