@@ -5,9 +5,11 @@
     <h3>Minimal flashcards software for studying using spaced repetition technique.</h3>
 </div>
 
-# Preview
-
 # Install (Linux)
+
+Currently only linux is supported. <br/><br/>
+AppImage is available [here](https://github.com/GioBigno/SimpleCards/releases)
+
 
 # Build from source (Linux)
 
@@ -33,3 +35,6 @@
     ```bash
     cmake --install . --prefix <custom/installation/prefix>
     ```
+
+# Extra
+icons: https://www.svgrepo.com/collection/chunk-16px-thick-interface-icons
