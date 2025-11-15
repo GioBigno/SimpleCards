@@ -121,26 +121,30 @@ ColumnLayout{
 		}
 	}
 
-	Flickable{
-		id: cardGridFlickable
+	ScrollView{
+		id: cardGridScrollView
 		Layout.fillWidth: true
 		Layout.fillHeight: true
 
-		flickableDirection: Flickable.VerticalFlick
-		clip: true
+		readonly property int cardWidth: 300
+		readonly property int cardHeight: 200
+
+		readonly property int internal_perRow: Math.max(Math.trunc((root.width + cardGrid.gap) / (cardWidth + cardGrid.gap)),1)
+		readonly property int internal_rowCount: Math.ceil((deckmodel.size + 1) / internal_perRow)
+
 		contentWidth: width
-		contentHeight: cardGrid.height 
+		contentHeight: internal_rowCount * (cardHeight + cardGrid.gap)
 
 		FlexboxLayout{
 			id: cardGrid
-			width: cardGridFlickable.contentWidth
+			width: cardGridScrollView.contentWidth
 			gap: 10
 			wrap: FlexboxLayout.Wrap
 			justifyContent: FlexboxLayout.JustifyCenter
 
 			Rectangle{
-				Layout.preferredWidth: 300
-				Layout.preferredHeight: 200
+				Layout.preferredWidth: cardGridScrollView.cardWidth
+				Layout.preferredHeight: cardGridScrollView.cardHeight
 				color: mypalette.window
 				radius: 10
 				
@@ -169,11 +173,12 @@ ColumnLayout{
 
 				Card{
 					id: card
-					Layout.preferredWidth: 300
-					Layout.preferredHeight: 200
+					Layout.preferredWidth: cardGridScrollView.cardWidth
+					Layout.preferredHeight: cardGridScrollView.cardHeight
 					question: model.question
 					answer: model.answer
 					revealed: false
+					enableMarkdown: false
 					MouseArea{
 						anchors.fill: parent
 						hoverEnabled: true

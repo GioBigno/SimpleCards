@@ -15,6 +15,7 @@ ColumnLayout{
 	readonly property color masteredColor: "limegreen"
 	readonly property color learningColor: "gold"
 	readonly property color newColor: "orangered"
+	readonly property color totalColor: "deepskyblue"
 
 	ListModel{id: legendModel}
 
@@ -44,11 +45,10 @@ ColumnLayout{
 		if(historySize < 2)
 			return
 
-		seriesMasterUpper.clear()
-		seriesMasterLower.clear()
-		seriesLearningUpper.clear()
-		seriesLearningLower.clear()
-		seriesNewUpper.clear()
+		totalSerie.clear()
+		masteredSerie.clear()
+		learningSerie.clear()
+		newSerie.clear()
 
 		let minDate = new Date()
 		let maxDate = new Date()
@@ -72,14 +72,15 @@ ColumnLayout{
 			let entry_learning = entry["learning"]
 			let entry_mastered = entry["mastered"]
 
-			if(entry_new + entry_learning + entry_mastered > maxY)
-				maxY = entry_new + entry_learning + entry_mastered
+			let total_cards = entry_new + entry_learning + entry_mastered
 
-            	seriesNewUpper.append(currDate, entry_new)
-			seriesLearningLower.append(currDate, entry_new)
-			seriesLearningUpper.append(currDate, entry_new + entry_learning)
-			seriesMasterLower.append(currDate, entry_new + entry_learning)
-            	seriesMasterUpper.append(currDate, entry_new + entry_learning + entry_mastered)
+			if(total_cards > maxY)
+				maxY = total_cards * (7/6)
+
+			totalSerie.append(currDate, total_cards);
+			masteredSerie.append(currDate, entry_mastered);
+			learningSerie.append(currDate, entry_learning);
+			newSerie.append(currDate, entry_new);
 		}
 
 		xAxis.min = minDate;
@@ -91,14 +92,17 @@ ColumnLayout{
 		let newCards = 0
 		let learningCards = 0
 		let masteredCards = 0
+		let totalCards = 0
 
 		if(historySize > 0){
 			let entry = deckmodel.statsHistory[historySize-1]
 			newCards = entry["new"]
 			learningCards = entry["learning"]
 			masteredCards = entry["mastered"]
+			totalCards = newCards+learningCards+masteredCards
 		}
 		
+        	legendModel.append({"color": totalColor, "label": "Total cards: ", "numberText": totalCards})
         	legendModel.append({"color": masteredColor, "label": "Mastered cards: ", "numberText": masteredCards})
 		legendModel.append({"color": learningColor, "label": "Learning cards: ", "numberText": learningCards})
 		legendModel.append({"color": newColor, "label": "New cards: ", "numberText": newCards})
@@ -189,10 +193,10 @@ ColumnLayout{
 			Image{
 				id: labelsvg
 				Layout.alignment: Qt.AlignVCenter
-				Layout.preferredWidth: 20
+				Layout.preferredWidth: 18
 				source: "/qt/qml/simplecardsModule/assets/label.svg"
-				sourceSize.width: 20
-				sourceSize.height: 20
+				sourceSize.width: 18
+				sourceSize.height: 18
 				smooth: true
 				fillMode: Image.PreserveAspectFit
 				ColorOverlay{
@@ -204,7 +208,7 @@ ColumnLayout{
 	
 			Label{
 				text: model.label + model.numberText
-				font.pointSize: 18
+				font.pointSize: 17
 			}
 		}
 	}
@@ -217,6 +221,8 @@ ColumnLayout{
 		Layout.rightMargin: 10
 		marginLeft: 0
 		marginRight: 40
+		marginTop: 10
+		marginBottom: 5
 		visible: historySize > 1
 
 		theme: GraphsTheme {
@@ -237,32 +243,34 @@ ColumnLayout{
 		    min: 0
 		    labelDecimals: 0
 		    tickInterval: Math.floor(max / 5)
-            }
+	    }
 
-		AreaSeries {
-			id: masteredSeries
-			name: "mastered"
-			color: masteredColor
-			borderColor: masteredColor
-			upperSeries: LineSeries {id: seriesMasterUpper}
-			lowerSeries: LineSeries {id: seriesMasterLower}
-        	}
-
-		AreaSeries {
-			id: learningSeries
-			name: "learning"
-			color: learningColor
-			borderColor: learningColor
-            	upperSeries: LineSeries {id: seriesLearningUpper} 
-            	lowerSeries: LineSeries {id: seriesLearningLower}
+		LineSeries {
+			id: totalSerie
+			name: "total"
+			color: totalColor
+			width: 4
 		}
 		
-		AreaSeries {
-			id: newSeries
+		LineSeries {
+			id: masteredSerie
+			name: "mastered"
+			color: masteredColor
+			width: 4
+		}
+
+		LineSeries {
+			id: learningSerie
+			name: "learning"
+			color: learningColor
+			width: 4
+		}
+		
+		LineSeries {
+			id: newSerie
 			name: "new"
 			color: newColor
-			borderColor: newColor
-            	upperSeries: LineSeries {id: seriesNewUpper} 
+			width: 4
 		}
 	}
 

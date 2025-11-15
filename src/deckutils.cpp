@@ -38,7 +38,7 @@ DeckModel* DeckUtils::getDeckModel() const
 
 QString DeckUtils::loadDeck(const QString& fileName, DeckMode mode)
 {
-	auto result = jsonFromFile(fileName).and_then(deckFromJson);
+	std::expected<Deck, QString> result = jsonFromFile(fileName).and_then(deckFromJson);
 	if(!result){
 		qWarning() << "[deckutils]" << result.error();
 		return result.error();

@@ -71,6 +71,7 @@ bool Card::toReview() const
 void Card::setResult(CardResult result)
 {
 	static constexpr double MIN_EASE = 1.3;
+	static constexpr size_t MAX_INTERVAL = 365;
 
 	switch(result){
 		case CardResult::Wrong:
@@ -81,11 +82,13 @@ void Card::setResult(CardResult result)
 		case CardResult::Hard:
 			repetitions += 1;
 			interval = std::round(interval * 1.2);
+			interval = std::min(interval, MAX_INTERVAL);
 			ease = std::max(MIN_EASE, ease - 0.05);
 			break;
 		case CardResult::Correct:
 			repetitions += 1;
 			interval = std::round(interval * ease);
+			interval = std::min(interval, MAX_INTERVAL);
 			ease += 0.03;
 			break;
 		default:
