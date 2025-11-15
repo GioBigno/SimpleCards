@@ -9,7 +9,7 @@ Rectangle{
 	property string answer: ""
 	property bool revealed: false
 	property int originalX: x
-	property bool hovered: false
+	property bool enableMarkdown: true
 
 	signal animationFinished()
 
@@ -52,6 +52,7 @@ Rectangle{
 			wrapMode: Text.Wrap
 			fontSizeMode: Text.Fit
 			elide: Text.ElideRight
+			textFormat: enableMarkdown ? Text.MarkdownText : Text.PlainText
 		}
 		Label{
 			Layout.fillWidth: true
@@ -65,6 +66,7 @@ Rectangle{
 			wrapMode: Text.Wrap
 			fontSizeMode: Text.Fit
 			elide: Text.ElideRight
+			textFormat: enableMarkdown ? Text.MarkdownText : Text.PlainText
 		}
 	}
 	

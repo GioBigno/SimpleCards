@@ -178,6 +178,7 @@ ColumnLayout{
 					question: model.question
 					answer: model.answer
 					revealed: false
+					enableMarkdown: false
 					MouseArea{
 						anchors.fill: parent
 						hoverEnabled: true

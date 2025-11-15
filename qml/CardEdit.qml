@@ -42,6 +42,7 @@ Rectangle{
 				text: question
 				font.pointSize: 15
 				wrapMode: Text.Wrap
+				textFormat: TextEdit.PlainText
 				onEditingFinished: {updateQuestion(text)}
 			}
 		}
@@ -60,6 +61,7 @@ Rectangle{
 				text: answer
 				font.pointSize: 15
 				wrapMode: Text.Wrap
+				textFormat: TextEdit.PlainText
 				onEditingFinished: {updateAnswer(text)}
 			}
 		}
