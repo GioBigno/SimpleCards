@@ -121,18 +121,16 @@ ColumnLayout{
 		}
 	}
 
-	Flickable{
+	ScrollView{
 		id: cardGridFlickable
 		Layout.fillWidth: true
 		Layout.fillHeight: true
 
-		flickableDirection: Flickable.VerticalFlick
-		clip: true
 		contentWidth: width
 
 		readonly property int cardWidth: 300
 		readonly property int cardHeight: 200
-
+		
 		onWidthChanged: {
 			let perRow = Math.max(Math.trunc((width+cardGrid.gap) / (cardWidth+cardGrid.gap)), 1)
 			let rows = Math.ceil((deckmodel.size+1)/perRow)
