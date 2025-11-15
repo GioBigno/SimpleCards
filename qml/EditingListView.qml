@@ -129,7 +129,15 @@ ColumnLayout{
 		flickableDirection: Flickable.VerticalFlick
 		clip: true
 		contentWidth: width
-		contentHeight: cardGrid.height 
+
+		readonly property int cardWidth: 300
+		readonly property int cardHeight: 200
+
+		onWidthChanged: {
+			let perRow = Math.max(Math.trunc((width+cardGrid.gap) / (cardWidth+cardGrid.gap)), 1)
+			let rows = Math.ceil((deckmodel.size+1)/perRow)
+			contentHeight = rows * (cardHeight+cardGrid.gap)
+		}
 
 		FlexboxLayout{
 			id: cardGrid
@@ -139,8 +147,8 @@ ColumnLayout{
 			justifyContent: FlexboxLayout.JustifyCenter
 
 			Rectangle{
-				Layout.preferredWidth: 300
-				Layout.preferredHeight: 200
+				Layout.preferredWidth: cardGridFlickable.cardWidth
+				Layout.preferredHeight: cardGridFlickable.cardHeight
 				color: mypalette.window
 				radius: 10
 				
@@ -169,8 +177,8 @@ ColumnLayout{
 
 				Card{
 					id: card
-					Layout.preferredWidth: 300
-					Layout.preferredHeight: 200
+					Layout.preferredWidth: cardGridFlickable.cardWidth
+					Layout.preferredHeight: cardGridFlickable.cardHeight
 					question: model.question
 					answer: model.answer
 					revealed: false
