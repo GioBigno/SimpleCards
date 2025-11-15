@@ -126,16 +126,14 @@ ColumnLayout{
 		Layout.fillWidth: true
 		Layout.fillHeight: true
 
-		contentWidth: width
-
 		readonly property int cardWidth: 300
 		readonly property int cardHeight: 200
-		
-		onWidthChanged: {
-			let perRow = Math.max(Math.trunc((width+cardGrid.gap) / (cardWidth+cardGrid.gap)), 1)
-			let rows = Math.ceil((deckmodel.size+1)/perRow)
-			contentHeight = rows * (cardHeight+cardGrid.gap)
-		}
+
+		readonly property int internal_perRow: Math.max(Math.trunc((root.width + cardGrid.gap) / (cardWidth + cardGrid.gap)),1)
+		readonly property int internal_rowCount: Math.ceil((deckmodel.size + 1) / internal_perRow)
+
+		contentWidth: width
+		contentHeight: internal_rowCount * (cardHeight + cardGrid.gap)
 
 		FlexboxLayout{
 			id: cardGrid
