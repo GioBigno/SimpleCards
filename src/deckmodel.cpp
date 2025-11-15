@@ -1,6 +1,7 @@
 #include "deckmodel.h"
 #include <random>
 #include <algorithm>
+#include <ranges>
 
 DeckModel::DeckModel(Deck deck, DeckMode mode, QObject *parent) 
 	: QAbstractListModel(parent),
