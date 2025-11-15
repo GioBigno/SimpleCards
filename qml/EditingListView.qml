@@ -122,7 +122,7 @@ ColumnLayout{
 	}
 
 	ScrollView{
-		id: cardGridFlickable
+		id: cardGridScrollView
 		Layout.fillWidth: true
 		Layout.fillHeight: true
 
@@ -139,14 +139,14 @@ ColumnLayout{
 
 		FlexboxLayout{
 			id: cardGrid
-			width: cardGridFlickable.contentWidth
+			width: cardGridScrollView.contentWidth
 			gap: 10
 			wrap: FlexboxLayout.Wrap
 			justifyContent: FlexboxLayout.JustifyCenter
 
 			Rectangle{
-				Layout.preferredWidth: cardGridFlickable.cardWidth
-				Layout.preferredHeight: cardGridFlickable.cardHeight
+				Layout.preferredWidth: cardGridScrollView.cardWidth
+				Layout.preferredHeight: cardGridScrollView.cardHeight
 				color: mypalette.window
 				radius: 10
 				
@@ -175,8 +175,8 @@ ColumnLayout{
 
 				Card{
 					id: card
-					Layout.preferredWidth: cardGridFlickable.cardWidth
-					Layout.preferredHeight: cardGridFlickable.cardHeight
+					Layout.preferredWidth: cardGridScrollView.cardWidth
+					Layout.preferredHeight: cardGridScrollView.cardHeight
 					question: model.question
 					answer: model.answer
 					revealed: false
