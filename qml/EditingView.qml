@@ -11,6 +11,8 @@ ColumnLayout{
 
 	property var deckmodel: DeckUtils.deckModel
 	required property int currentIdx
+
+	onActiveFocusChanged: card.questionInput.forceActiveFocus()
 	
 	MessageDialog{
 		id: deleteCardDialog
