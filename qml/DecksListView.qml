@@ -54,14 +54,14 @@ ColumnLayout{
 
 		model: DeckUtils.availableDecks
 
-		onOpen: (filePath) => {
-			deckListView.onOpen(filePath)
+		onOpen: (deckFilePath) => {
+			deckListView.onOpen(deckFilePath)
 		}
-		onEdit: (filePath) => {
-			deckListView.onEdit(filePath)
+		onEdit: (deckFilePath) => {
+			deckListView.onEdit(deckFilePath)
 		}
-		onStats: (filePath) => {
-			deckListView.onStats(filePath)
+		onStats: (deckFilePath) => {
+			deckListView.onStats(deckFilePath)
 		}
 	}
 

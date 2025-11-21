@@ -69,33 +69,33 @@ ApplicationWindow {
 	Component{
 		id: decksList
 		DecksListView{
-			onOpen: (filePath) => {	
-				let error = DeckUtils.loadDeck(filePath, DeckMode.Test)
+			onOpen: (deckFilePath) => {	
+				let error = DeckUtils.loadDeck(deckFilePath, DeckMode.Test)
 				if(error===""){
 					stack.push(testingComponent)
 				}else{
 					loadingErrorDialog.informativeText = "Details:" + error
-					loadingErrorDialog.filePathToDelete = filePath
+					loadingErrorDialog.filePathToDelete = deckFilePath
 					loadingErrorDialog.open()
 				}
 			}
-			onEdit: (filePath) => {
-				let error = DeckUtils.loadDeck(filePath, DeckMode.Edit)
+			onEdit: (deckFilePath) => {
+				let error = DeckUtils.loadDeck(deckFilePath, DeckMode.Edit)
 				if(error===""){
 					stack.push(editingListComponent)
 				}else{
 					loadingErrorDialog.informativeText = "Details: " + error
-					loadingErrorDialog.filePathToDelete = filePath
+					loadingErrorDialog.filePathToDelete = deckFilePath
 					loadingErrorDialog.open()
 				}
 			}
-			onStats: (filePath) => {
-				let error = DeckUtils.loadDeck(filePath, DeckMode.Edit)
+			onStats: (deckFilePath) => {
+				let error = DeckUtils.loadDeck(deckFilePath, DeckMode.Edit)
 				if(error===""){
 					stack.push(statsComponent)
 				}else{
 					loadingErrorDialog.informativeText = "Details: " + error
-					loadingErrorDialog.filePathToDelete = filePath
+					loadingErrorDialog.filePathToDelete = deckFilePath
 					loadingErrorDialog.open()
 				}
 			}

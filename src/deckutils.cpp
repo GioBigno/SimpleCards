@@ -13,7 +13,7 @@ DeckUtils::DeckUtils(QObject *parent)
 QVariantList DeckUtils::getAvailableDecks() const
 {
 	QDir dataDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
-	QFileInfoList fileList = dataDir.entryInfoList(QStringList("*.json"), QDir::Files);
+	QFileInfoList fileList = dataDir.entryInfoList({QString("*") + DeckUtils::DECK_FILE_SUFFIX}, QDir::Files);
 
 	std::sort(fileList.begin(), fileList.end(), [](const QFileInfo &a, const QFileInfo &b){
 		return a.lastModified() > b.lastModified();
@@ -21,9 +21,9 @@ QVariantList DeckUtils::getAvailableDecks() const
 
 	QVariantList ret;
 	ret.reserve(fileList.size());
-    for(const QFileInfo &fileInfo : std::as_const(fileList)){
+    	for(const QFileInfo &fileInfo : std::as_const(fileList)){
 		QVariantMap map;
-		map["file_path"] = fileInfo.absoluteFilePath();
+		map["deck_file_path"] = fileInfo.absoluteFilePath();
 		map["base_name"] = fileInfo.baseName();
 		ret << map;
 	}
@@ -36,16 +36,34 @@ DeckModel* DeckUtils::getDeckModel() const
 	return m_deckModel.get();
 }
 
-QString DeckUtils::loadDeck(const QString& fileName, DeckMode mode)
+QString DeckUtils::loadDeck(const QString& deckFileName, DeckMode mode)
 {
-	std::expected<Deck, QString> result = jsonFromFile(fileName).and_then(deckFromJson);
+	//TODO improve this spaghetti code function
+	std::expected<Deck, QString> result = jsonFromFile(deckFileName).and_then(deckFromJson);
 	if(!result){
 		qWarning() << "[deckutils]" << result.error();
 		return result.error();
 	}
 
+	const QString statsFileName = statsFileNameFromDeckFileName(deckFileName);
+	if(QFile::exists(statsFileName)){
+		std::expected<QJsonDocument, QString> statsJson = jsonFromFile(statsFileName);
+		
+		if(!statsJson){
+			qWarning() << "[deckutils]" << statsJson.error();
+			return statsJson.error();
+		}
+
+		result = deckAddStatsFromJson(std::move(result.value()), statsJson.value());
+	
+		if(!result){
+			qWarning() << "[deckutils]" << result.error();
+			return result.error();
+		}
+	}
+
 	m_deckModel = std::make_unique<DeckModel>(std::move(result.value()), mode, this);
-	m_deckFilePath = fileName;
+	m_deckFilePath = deckFileName;
 	emit deckModelChanged();
 	return "";
 }
@@ -57,10 +75,12 @@ void DeckUtils::saveLoadedDeck()
 		return;
 	}
 
-	bool res = jsonToFile(jsonFromDeck(m_deckModel->getDeck()), m_deckFilePath);
-	emit availableDecksChanged();
+	if(!jsonToFile(deckJsonFromDeck(m_deckModel->getDeck()), m_deckFilePath))
+		qCritical() << "[deckutils] Error saving deck to file";
 
-	if(!res)
+	emit availableDecksChanged();
+	
+	if(!jsonToFile(statsJsonFromDeck(m_deckModel->getDeck()), statsFileNameFromDeckFileName(m_deckFilePath)))
 		qCritical() << "[deckutils] Error saving deck to file";
 }
 
@@ -73,15 +93,16 @@ void DeckUtils::deleteLoadedDeck()
 
 	m_deckModel.reset();
 	emit deckModelChanged();
-	if(!QFile::moveToTrash(m_deckFilePath))
-		QFile::remove(m_deckFilePath);
-	m_deckFilePath = "";
-	emit availableDecksChanged();
+	deleteDeck(m_deckFilePath);
 }
 
-void DeckUtils::deleteDeck(const QString& filePath)
+void DeckUtils::deleteDeck(const QString& deckFilePath)
 {
-	QFile::remove(filePath);
+	if(!QFile::moveToTrash(deckFilePath))
+		QFile::remove(deckFilePath);
+	const QString statsFilePath = statsFileNameFromDeckFileName(deckFilePath);
+	if(!QFile::moveToTrash(statsFilePath))
+		QFile::remove(statsFilePath);
 	emit availableDecksChanged();
 }
 
@@ -90,20 +111,20 @@ QString DeckUtils::createEmptyDeckFile()
 	QString deckName("New Deck");
 	QDir dataDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
 	
-	QString fileName = QString("%1/%2.json")
+	QString fileName = QString("%1/%2%3")
                  .arg(dataDir.absolutePath(),
-                      sanitizeFileName(deckName));
+                      sanitizeFileName(deckName),
+			    DeckUtils::DECK_FILE_SUFFIX);
 	fileName = uniqueFileName(std::move(fileName));
 
 	Deck emptyDeck(deckName);
-	
-	if(!jsonToFile(jsonFromDeck(emptyDeck), fileName))
+	if(!jsonToFile(deckJsonFromDeck(emptyDeck), fileName))
 		qCritical() << "[deckutils] Error saving deck to file";
 
 	emit availableDecksChanged();
 	return fileName;
 }
-	
+
 void DeckUtils::changeLoadedDeckFileName(const QString& deckName)
 {
 	QFileInfo fileInfo(m_deckFilePath);
@@ -112,20 +133,33 @@ void DeckUtils::changeLoadedDeckFileName(const QString& deckName)
 		qCritical() << "[deckutils] File does not exist:" <<m_deckFilePath;
 
 	QString sanitizedName = sanitizeFileName(deckName);
-	QString newFilePath = QString("%1/%2.json")
+	QString newDeckFilePath = QString("%1/%2%3")
                     .arg(fileInfo.absolutePath(),
-                         sanitizedName);
+                         sanitizedName,
+				 DeckUtils::DECK_FILE_SUFFIX);
 
-	if(m_deckFilePath == newFilePath)
+	if(m_deckFilePath == newDeckFilePath)
 		return;
 
-	newFilePath = uniqueFileName(std::move(newFilePath));
+	newDeckFilePath = uniqueFileName(std::move(newDeckFilePath));
+	const QString old_statsFilePath = statsFileNameFromDeckFileName(m_deckFilePath);
+	const QString new_statsFilePath = statsFileNameFromDeckFileName(newDeckFilePath);
 
-	QFile file(m_deckFilePath);
-	if(QFile::rename(m_deckFilePath, newFilePath)){
-		emit availableDecksChanged();
-		m_deckFilePath = newFilePath; 
-	}
+	if(!QFile::rename(m_deckFilePath, newDeckFilePath))
+		return;
+	
+	emit availableDecksChanged();
+	m_deckFilePath = newDeckFilePath; 
+
+	QFile::rename(old_statsFilePath, new_statsFilePath);
+}
+
+QString DeckUtils::statsFileNameFromDeckFileName(const QString& deckFileName)
+{
+	if(deckFileName.endsWith(DeckUtils::DECK_FILE_SUFFIX, Qt::CaseInsensitive))
+		return deckFileName.left(deckFileName.length() - DeckUtils::DECK_FILE_SUFFIX.length()) + DeckUtils::STATS_FILE_SUFFIX;
+
+	return deckFileName;
 }
 
 std::expected<QJsonDocument, QString> DeckUtils::jsonFromFile(const QString& jsonFilename)
@@ -186,10 +220,16 @@ std::expected<Deck, QString> DeckUtils::deckFromJson(const QJsonDocument& jsonDo
 	std::vector<Card> cards;
 	cards.reserve(cardsArr.size());
 	
-    for(const auto& card : std::as_const(cardsArr)){
+    	for(const auto& card : std::as_const(cardsArr)){
 		QJsonObject cardObj = card.toObject();
 		if(cardObj.isEmpty())
 			return std::unexpected{prefix + "card object is empty"};
+		
+		QJsonValue id_val = cardObj.value("id");
+		if(!id_val.isDouble())
+			return std::unexpected{prefix + "id is not a number"};
+
+		int id = id_val.toInt();
 
 		QJsonValue question_val = cardObj.value("question");
 		if(!question_val.isString())
@@ -203,13 +243,35 @@ std::expected<Deck, QString> DeckUtils::deckFromJson(const QJsonDocument& jsonDo
 
 		QString answer = answer_val.toString();
 
-		QJsonValue creationDate_val = cardObj.value("date_creation");
-		if(!creationDate_val.isString())
-			return std::unexpected{prefix + "date_creation is not a string"};
+		cards.emplace_back(id, question, answer);
+	}
 
-		QDate creationDate = QDate::fromString(creationDate_val.toString(), Qt::ISODate);
-		if(!creationDate.isValid())
-			return std::unexpected{prefix + "date_creation is not a valid date"};
+	return Deck(std::move(deckName), std::move(cards), {});
+}
+
+std::expected<Deck, QString> DeckUtils::deckAddStatsFromJson(Deck&& deck, const QJsonDocument& jsonDoc)
+{
+	QString prefix("Error parsing json: ");
+
+	QJsonObject deckObj = jsonDoc.object();
+	if(deckObj.isEmpty())
+		return std::unexpected{prefix + "main component is not an object"};
+
+	QJsonValue cardsArr_val = deckObj.value("cards");
+	if(!cardsArr_val.isArray())
+		return std::unexpected{prefix + "cards not found"};
+
+	QJsonArray cardsArr = cardsArr_val.toArray();
+    	for(const auto& card : std::as_const(cardsArr)){
+		QJsonObject cardObj = card.toObject();
+		if(cardObj.isEmpty())
+			return std::unexpected{prefix + "card object is empty"};
+		
+		QJsonValue id_val = cardObj.value("id");
+		if(!id_val.isDouble())
+			return std::unexpected{prefix + "id is not a number"};
+
+		int id = id_val.toInt();
 
 		QJsonValue nextReviewDate_val = cardObj.value("date_next_review");
 		if(!nextReviewDate_val.isString())
@@ -237,9 +299,16 @@ std::expected<Deck, QString> DeckUtils::deckFromJson(const QJsonDocument& jsonDo
 
 		size_t repetitions = repetitions_val.toInt();
 
-		cards.emplace_back(question, answer, creationDate, nextReviewDate, ease, interval, repetitions);
-	}
+		std::optional<std::reference_wrapper<Card>> res = deck.getCardById(id);
+		if(!res) return std::unexpected{prefix + "card id not valid"};
+		Card& c = res->get();
 
+		c.setNextReviewDate(nextReviewDate);
+		c.setEase(ease);
+		c.setInterval(interval);
+		c.setRepetitions(repetitions);
+	}
+	
 	QJsonValue statsArr_val = deckObj.value("stats");
 	if(!statsArr_val.isArray())
 		return std::unexpected{prefix + "stats not found"};
@@ -247,7 +316,7 @@ std::expected<Deck, QString> DeckUtils::deckFromJson(const QJsonDocument& jsonDo
 	QJsonArray statsArr = statsArr_val.toArray();
 	std::map<QDate, std::tuple<int, int, int>> master_history;
 	
-    for(const auto& log : std::as_const(statsArr)){
+    	for(const auto& log : std::as_const(statsArr)){
 		QJsonObject logObj = log.toObject();
 		if(logObj.isEmpty())
 			return std::unexpected{prefix + "stat object is empty"};
@@ -280,10 +349,12 @@ std::expected<Deck, QString> DeckUtils::deckFromJson(const QJsonDocument& jsonDo
 
 		master_history[logDate] = std::make_tuple(n_new, n_learning, n_mastered);
 	}
-	return Deck(std::move(deckName), std::move(cards), master_history);
+
+	deck.setMasterHistory(std::move(master_history));
+	return deck;
 }
 
-QJsonDocument DeckUtils::jsonFromDeck(const Deck& deck)
+QJsonDocument DeckUtils::deckJsonFromDeck(const Deck& deck)
 {
 	QJsonObject mainObj;
 	mainObj.insert("deck_name", deck.getName());
@@ -291,9 +362,25 @@ QJsonDocument DeckUtils::jsonFromDeck(const Deck& deck)
 	QJsonArray cardsArray;
 	for(const Card& card : deck.getCards()){
 		QJsonObject cardObj;
+		cardObj.insert("id", QJsonValue(card.getId()));
 		cardObj.insert("question", QJsonValue(card.getQuestion()));
 		cardObj.insert("answer", QJsonValue(card.getAnswer()));
-		cardObj.insert("date_creation", QJsonValue(card.getCreationDate().toString(Qt::ISODate)));
+		cardsArray.push_back(cardObj);
+	}
+	mainObj.insert("cards", cardsArray);
+
+	QJsonDocument doc(mainObj);
+	return doc;
+}
+
+QJsonDocument DeckUtils::statsJsonFromDeck(const Deck& deck)
+{
+	QJsonObject mainObj;
+	
+	QJsonArray cardsArray;
+	for(const Card& card : deck.getCards()){
+		QJsonObject cardObj;
+		cardObj.insert("id", QJsonValue(card.getId()));
 		cardObj.insert("ease", QJsonValue(card.getEase()));
 		cardObj.insert("interval", QJsonValue(static_cast<qint64>(card.getInterval())));
 		cardObj.insert("repetitions", QJsonValue(static_cast<qint64>(card.getRepetitions())));
@@ -324,7 +411,7 @@ QString DeckUtils::sanitizeFileName(QString str) const
 	// Replace one or more spaces with a single underscore
 	str.replace(QRegularExpression("\\s+"), "_");
 	// Remove invalid filename characters
-	str.remove(QRegularExpression("[/\\\\:*?\"<>|]"));
+	str.remove(QRegularExpression("[/\\\\:.*?\"<>|]"));
 	
 	return str;
 }

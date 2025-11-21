@@ -1,22 +1,25 @@
 #include "card.h"
 
-Card::Card()
-{}
-
-Card::Card(QString question, QString answer)
-	: question(std::move(question)), 
+Card::Card(int id, QString question, QString answer)
+	: id(id),
+	  question(std::move(question)), 
 	  answer(std::move(answer))
 {}
 
-Card::Card(QString question, QString answer, QDate creationDate, QDate nextReviewDate, double ease, size_t interval, size_t repetitions)
-	: question(std::move(question)), 
+Card::Card(int id, QString question, QString answer, QDate nextReviewDate, double ease, size_t interval, size_t repetitions)
+	: id(id),
+	  question(std::move(question)), 
 	  answer(std::move(answer)),
-	  creationDate(std::move(creationDate)),
 	  nextReviewDate(std::move(nextReviewDate)),
 	  ease(ease),
 	  interval(interval),
 	  repetitions(repetitions)
 {}
+
+int Card::getId() const
+{
+	return id;
+}
 
 QString Card::getQuestion() const 
 {
@@ -37,15 +40,15 @@ void Card::setAnswer(QString text)
 {
 	answer = std::move(text);
 }
-	
-QDate Card::getCreationDate() const
-{
-	return creationDate;
-}
 
 QDate Card::getNextReviewDate() const
 {
 	return nextReviewDate;
+}
+
+void Card::setNextReviewDate(const QDate& new_date)
+{
+	nextReviewDate = new_date;
 }
 
 double Card::getEase() const
@@ -53,14 +56,29 @@ double Card::getEase() const
 	return ease;
 }
 
+void Card::setEase(double new_ease)
+{
+	ease = new_ease;
+}
+
 size_t Card::getInterval() const
 {
 	return interval;
 }
 
+void Card::setInterval(size_t new_interval)
+{
+	interval = new_interval;
+}
+
 size_t Card::getRepetitions() const
 {
 	return repetitions;
+}
+
+void Card::setRepetitions(size_t new_repetitions)
+{
+	repetitions = new_repetitions;
 }
 
 bool Card::toReview() const

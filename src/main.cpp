@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 	if(settings.value("utils/first_opening", true).toBool()){
 		settings.setValue("utils/first_opening", false);
 		QDir dataDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-		QFile::copy(":qt/qml/simplecardsModule/example_decks/Example.json", dataDir.absolutePath()+"/Example.json");
+		QFile::copy(":qt/qml/simplecardsModule/example_decks/Example.deck.json", dataDir.absolutePath()+"/Example.deck.json");
 	}
 
 	QQmlApplicationEngine engine;

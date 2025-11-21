@@ -1,0 +1,20 @@
+{
+    "cards": [
+        {
+		"id": 0,
+            "answer": "42",
+            "question": "What is the answer to life, the universe, and everything?"
+        },
+        {
+		"id": 1,
+            "answer": "Actively trying to remember information (like using flashcards) instead of passively reading it",
+            "question": "What is active recall?"
+        },
+        {
+		"id": 2,
+            "answer": "A learning technique where you review cards at increasing intervals to boost long-term memory",
+            "question": "What is spaced repetition?"
+        }
+    ],
+    "deck_name": "Example"
+}

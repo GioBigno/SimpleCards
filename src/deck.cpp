@@ -1,5 +1,6 @@
 #include "deck.h"
 #include "card.h"
+#include <ranges>
 
 Deck::Deck(){}
 
@@ -7,7 +8,7 @@ Deck::Deck(QString name)
 	: name(std::move(name))
 {}
 
-Deck::Deck(QString name, std::vector<Card>&& cards, std::map<QDate, std::tuple<int, int, int>> master_history)
+Deck::Deck(QString name, std::vector<Card>&& cards, std::map<QDate, std::tuple<int, int, int>>&& master_history)
 	: name(std::move(name)),
 	  cards(std::move(cards)),
 	  master_history(std::move(master_history))
@@ -40,8 +41,19 @@ const Card& Deck::getCardAt(size_t idx) const
 	return cards[idx];
 }
 
-void Deck::addCard(Card&& c)
+std::optional<std::reference_wrapper<Card>> Deck::getCardById(int id)
 {
+	auto it = std::ranges::find_if(cards, [id](Card& c){return c.getId() == id;});
+
+	if(it == cards.end())
+		return std::nullopt;
+	return *it;
+}
+
+void Deck::addNewCard()
+{
+	Card c(nextValidId(), "", "");
+
 	auto& today_tuple = master_history[QDate::currentDate()];
 	CardMasteryLevel mastery = calculateMastery(c);
 	increaseTupleByMastery(today_tuple, mastery);
@@ -90,6 +102,12 @@ std::map<QDate, std::tuple<int, int, int>> Deck::getMasterHistory() const
 	return master_history;
 }
 
+void Deck::setMasterHistory(std::map<QDate, std::tuple<int, int, int>>&& new_master_history)
+{
+	master_history = std::move(new_master_history);
+	updateStats();
+}
+
 Deck::CardMasteryLevel Deck::calculateMastery(const Card& c) const
 {
 	const double ease = c.getEase();
@@ -130,4 +148,16 @@ void Deck::updateStats()
 	for(const Card& c : std::as_const(cards)){
 		increaseTupleByMastery(today_tuple, calculateMastery(c));
 	}
+}
+
+int Deck::nextValidId() const
+{
+	if(cards.size() == 0)
+		return 0;
+
+	int maxId = cards[0].getId();
+	for(const Card& c : std::as_const(cards))
+		maxId = std::max(maxId, c.getId());
+
+	return maxId+1;
 }

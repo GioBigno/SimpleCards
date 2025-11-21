@@ -56,7 +56,7 @@ qt_add_qml_module(simplecards
 		assets/label.svg
 		assets/info.svg
 		assets/settings.svg
-		example_decks/Example.json
+		example_decks/Example.deck.json
 )
 
 target_include_directories(simplecards
