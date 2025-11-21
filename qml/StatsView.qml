@@ -239,10 +239,10 @@ ColumnLayout{
             }
 
             axisY: ValueAxis {
-                id: yAxis
-		    min: 0
-		    labelDecimals: 0
-		    tickInterval: Math.floor(max / 5)
+			id: yAxis
+			min: 0
+			labelDecimals: 0
+			tickInterval: Math.max(1, Math.floor(max / 5))
 	    }
 
 		LineSeries {
