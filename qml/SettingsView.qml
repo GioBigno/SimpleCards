@@ -67,9 +67,7 @@ ColumnLayout{
 				text: qsTr("Remember window size")
 				toolTipText: qsTr("Restore window size on startup")
 				startingChecked: AppConfig.rememberSize
-				onCheckedChanged: {
-					AppConfig.rememberSize = checked
-				}
+				onCheckedChanged: {AppConfig.rememberSize = checked}
 			}
 
 			Label{
@@ -88,9 +86,7 @@ ColumnLayout{
 				text: qsTr("\"hard\" button")
 				toolTipText: qsTr("Enable a third button when selecting the result of retrieving.\nThis should be used for correct but very difficult retrieves")
 				startingChecked: AppConfig.hardButton
-				onCheckedChanged: {
-					AppConfig.hardButton = checked
-				}
+				onCheckedChanged: {AppConfig.hardButton = checked}
 			}
 
 			CheckBoxEntry{
@@ -100,9 +96,7 @@ ColumnLayout{
 				text: qsTr("Card counter")
 				toolTipText: qsTr("Show the number of cards tested and the number of cards to test")
 				startingChecked: AppConfig.cardsCounter
-				onCheckedChanged: {
-					AppConfig.cardsCounter = checked
-				}
+				onCheckedChanged: {AppConfig.cardsCounter = checked}
 			}
 
 			Label{
@@ -121,9 +115,7 @@ ColumnLayout{
 				text: qsTr("Ask for confirmation before deleting a deck")
 				toolTipText: qsTr("Asks for confirmation before deleting a deck")
 				startingChecked: AppConfig.confirmDeleteDeck
-				onCheckedChanged: {
-					AppConfig.confirmDeleteDeck = checked
-				}
+				onCheckedChanged: {AppConfig.confirmDeleteDeck = checked}
 			}
 
 			CheckBoxEntry{
@@ -133,8 +125,27 @@ ColumnLayout{
 				text: qsTr("Ask for confirmation before deleting a card")
 				toolTipText: qsTr("Asks for confirmation before deleting a card")
 				startingChecked: AppConfig.confirmDeleteCard
-				onCheckedChanged: {
-					AppConfig.confirmDeleteCard = checked
+				onCheckedChanged: {AppConfig.confirmDeleteCard = checked}
+			}
+			
+			Label{
+				Layout.fillWidth: true
+				Layout.alignment: Qt.AlignLeft
+				Layout.leftMargin: 30
+				text: "Advanced"
+				font.bold: true
+				font.pointSize: 18
+			}
+
+			FilepathText{
+				Layout.fillWidth: true
+				Layout.alignment: Qt.AlignLeft
+				Layout.leftMargin: 30
+				labelText: "decks directory:"
+				displayPath: AppConfig.decksDirectory
+				onSelectedPathChanged: {
+					AppConfig.decksDirectory = selectedPath
+					DeckUtils.dataDir = selectedPath
 				}
 			}
 		}

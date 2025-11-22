@@ -8,6 +8,21 @@ AppConfig::AppConfig(QObject *parent)
     : QObject{parent}
 {}
 
+QUrl AppConfig::decksDirectory_default(){
+	return QUrl::fromLocalFile(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+}
+
+bool AppConfig::getFirstOpening()
+{
+	return settings.value("utils/first_opening", firstOpening_default).toBool();
+}
+
+void AppConfig::setFirstOpening(bool opt)
+{
+	settings.setValue("utils/first_opening", opt);
+	emit firstOpeningChanged();
+}
+
 bool AppConfig::getHardButton()
 {
 	return settings.value("testing/hard_button", hardButton_default).toBool();
@@ -83,4 +98,15 @@ void AppConfig::setConfirmDeleteCard(bool opt)
 {
 	settings.setValue("editing/confirm_delete_card", opt);
 	emit confirmDeleteCardChanged();
+}
+
+QUrl AppConfig::getDecksDirectory()
+{
+	return settings.value("advanced/decks_directory", decksDirectory_default()).toUrl();
+}
+
+void AppConfig::setDecksDirectory(QUrl dir)
+{
+	settings.setValue("advanced/decks_directory", dir);
+	emit decksDirectoryChanged();
 }

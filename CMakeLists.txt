@@ -38,6 +38,7 @@ qt_add_qml_module(simplecards
 		qml/SettingsView.qml
 		qml/Info.qml
 		qml/CheckBoxEntry.qml
+		qml/FilepathText.qml
 	RESOURCES
 		assets/SpaceMono-Regular.ttf
 		assets/SpaceMono-Bold.ttf

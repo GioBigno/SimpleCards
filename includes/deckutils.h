@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QQmlEngine>
 #include <QVariant>
+#include <QDir>
 #include <QtQml/qqmlregistration.h>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -21,6 +22,7 @@ class DeckUtils : public QObject
 
 	Q_PROPERTY(QVariantList availableDecks READ getAvailableDecks NOTIFY availableDecksChanged)
 	Q_PROPERTY(DeckModel* deckModel READ getDeckModel NOTIFY deckModelChanged)
+	Q_PROPERTY(QUrl dataDir READ getDataDir WRITE setDataDir)
 
 signals:
 	void availableDecksChanged();
@@ -29,6 +31,8 @@ signals:
 public:
 	QVariantList getAvailableDecks() const;
 	DeckModel* getDeckModel() const;
+	QUrl getDataDir() const;
+	void setDataDir(const QUrl& url);
 	Q_INVOKABLE QString loadDeck(const QString& deckFileName, DeckMode mode);
 	Q_INVOKABLE void saveLoadedDeck();
 	Q_INVOKABLE void deleteLoadedDeck();
@@ -39,6 +43,7 @@ public:
 	explicit DeckUtils(QObject *parent = nullptr);
 
 private:
+	QDir dataDir;
 	QString m_deckFilePath = "";
 	std::unique_ptr<DeckModel> m_deckModel;
 	

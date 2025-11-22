@@ -1,5 +1,4 @@
 import QtQuick
-//import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
@@ -15,6 +14,8 @@ ApplicationWindow {
 	font.family: "Space Mono"
 
 	Component.onCompleted: {
+		DeckUtils.dataDir = AppConfig.decksDirectory
+
 		if(!AppConfig.rememberSize)
 			return;
 

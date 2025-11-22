@@ -12,7 +12,6 @@ DeckUtils::DeckUtils(QObject *parent)
 
 QVariantList DeckUtils::getAvailableDecks() const
 {
-	QDir dataDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
 	QFileInfoList fileList = dataDir.entryInfoList({QString("*") + DeckUtils::DECK_FILE_SUFFIX}, QDir::Files);
 
 	std::sort(fileList.begin(), fileList.end(), [](const QFileInfo &a, const QFileInfo &b){
@@ -34,6 +33,17 @@ QVariantList DeckUtils::getAvailableDecks() const
 DeckModel* DeckUtils::getDeckModel() const
 {
 	return m_deckModel.get();
+}
+
+void DeckUtils::setDataDir(const QUrl& url)
+{
+	dataDir = QDir(url.toLocalFile());
+	emit availableDecksChanged();
+}
+
+QUrl DeckUtils::getDataDir() const
+{
+	return QUrl(dataDir.absolutePath());
 }
 
 QString DeckUtils::loadDeck(const QString& deckFileName, DeckMode mode)
@@ -109,7 +119,6 @@ void DeckUtils::deleteDeck(const QString& deckFilePath)
 QString DeckUtils::createEmptyDeckFile()
 {
 	QString deckName("New Deck");
-	QDir dataDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
 	
 	QString fileName = QString("%1/%2%3")
                  .arg(dataDir.absolutePath(),
