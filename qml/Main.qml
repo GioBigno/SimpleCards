@@ -29,16 +29,36 @@ ApplicationWindow {
 	}
 
 	onClosing: {
-		
 		if(!AppConfig.rememberSize)
 			return;
 
 		if(visibility === Window.Maximized){
 			AppConfig.windowMaximized = true;
-		}else{
+		}else if(visibility === Window.Windowed){
 			AppConfig.windowMaximized = false;
 			AppConfig.windowSize = Qt.size(width, height)
 		}
+	}
+
+	function toggleFullScreen(){
+		if(visibility === Window.FullScreen){
+			visibility = Window.Windowed
+		}else{
+			visibility = Window.FullScreen
+		}
+	}
+
+	Shortcut{
+		sequence: "F11"
+		context: Qt.ApplicationShortcut
+		onActivated: toggleFullScreen()
+	}
+
+	Shortcut{
+		sequence: "Esc"
+		context: Qt.ApplicationShortcut
+		enabled: root.visibility === Window.FullScreen
+		onActivated: toggleFullScreen()
 	}
 
 	SystemPalette{

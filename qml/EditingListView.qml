@@ -130,7 +130,7 @@ ColumnLayout{
 		readonly property int cardHeight: 200
 
 		readonly property int internal_perRow: Math.max(Math.trunc((root.width + cardGrid.gap) / (cardWidth + cardGrid.gap)),1)
-		readonly property int internal_rowCount: Math.ceil((deckmodel.size + 1) / internal_perRow)
+		readonly property int internal_rowCount: Math.ceil(((deckmodel ? deckmodel.size : 0) + 1) / internal_perRow)
 
 		contentWidth: width
 		contentHeight: internal_rowCount * (cardHeight + cardGrid.gap)
