@@ -57,7 +57,7 @@ ColumnLayout{
 			}
 		}
 	}
-	
+
 	Card{
 		id: card
 		visible: !deckFinished
@@ -79,6 +79,26 @@ ColumnLayout{
 				card.revealed = false
 			}
 		}
+	}
+
+	function revealAnswer(){
+		if(card.revealed)
+			return;
+		card.revealed = true;
+	}
+	function setResult(r){
+		if(!card.revealed)
+			return;
+
+		if(r === CardResult.Wrong)
+			card.triggerWrong()
+		else if(r === CardResult.Hard || r === CardResult.Correct)
+			card.triggerCorrect()
+		else
+			console.log("[TestingView] setResult called with " + r + ", expected a CardResult value")
+
+		deckmodel.setResultAt(currentIdx, r)
+		answered++
 	}
 
 	ColumnLayout{
@@ -122,14 +142,10 @@ ColumnLayout{
 			icon.height: 40
 			flat: true
 			display: AbstractButton.IconOnly
-			onClicked: {
-				card.triggerWrong()
-				deckmodel.setResultAt(currentIdx, CardResult.Wrong)
-				answered++
-			}
+			onClicked: setResult(CardResult.Wrong)
 			HoverHandler {cursorShape: Qt.PointingHandCursor}
 			ToolTip.visible: hovered
-    			ToolTip.text: qsTr("Wrong answer")
+			ToolTip.text: qsTr("Wrong answer (1)")
 			ToolTip.delay: 1000
 		}
 		RoundButton{
@@ -142,14 +158,10 @@ ColumnLayout{
 			icon.height: 40
 			flat: true
 			display: AbstractButton.IconOnly
-			onClicked: {
-				card.triggerCorrect()
-				deckmodel.setResultAt(currentIdx, CardResult.Hard)
-				answered++
-			}
+			onClicked: setResult(CardResult.Hard)
 			HoverHandler {cursorShape: Qt.PointingHandCursor}
 			ToolTip.visible: hovered
-    			ToolTip.text: qsTr("Correct but hard")
+			ToolTip.text: qsTr("Correct but hard (2)")
 			ToolTip.delay: 1000
 		}
 		RoundButton{
@@ -161,14 +173,10 @@ ColumnLayout{
 			icon.height: 40
 			flat: true
 			display: AbstractButton.IconOnly
-			onClicked: {
-				card.triggerCorrect()
-				deckmodel.setResultAt(currentIdx, CardResult.Correct)
-				answered++
-			}
+			onClicked: setResult(CardResult.Correct)
 			HoverHandler {cursorShape: Qt.PointingHandCursor}
 			ToolTip.visible: hovered
-    			ToolTip.text: qsTr("Correct answer")
+			ToolTip.text: qsTr("Correct answer (3)")
 			ToolTip.delay: 1000
 		}
 	}
@@ -187,11 +195,32 @@ ColumnLayout{
 			icon.height: 40
 			flat: true
 			display: AbstractButton.IconOnly
-			onClicked: {card.revealed = true}
+			onClicked: revealAnswer()
 			HoverHandler {cursorShape: Qt.PointingHandCursor}
 			ToolTip.visible: hovered
-    			ToolTip.text: qsTr("Reveal answer")
+			ToolTip.text: qsTr("Reveal answer (Space)")
 			ToolTip.delay: 1000
 		}
+	}
+
+	Shortcut{
+		sequence: "Space"
+		context: Qt.WindowShortcut
+		onActivated: revealAnswer()
+	}
+	Shortcut{
+		sequence: "1"
+		context: Qt.WindowShortcut
+		onActivated: setResult(CardResult.Wrong)
+	}
+	Shortcut{
+		sequence: "2"
+		context: Qt.WindowShortcut
+		onActivated: setResult(CardResult.Hard)
+	}
+	Shortcut{
+		sequence: "3"
+		context: Qt.WindowShortcut
+		onActivated: setResult(CardResult.Correct)
 	}
 }
