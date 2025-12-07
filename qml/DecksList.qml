@@ -45,7 +45,7 @@ ListView{
 				icon.color: hovered ? mypalette.highlight : mypalette.buttonText
 				flat: true
 				display: AbstractButton.IconOnly
-				onClicked: onOpen(modelData.file_path)
+				onClicked: onOpen(modelData.deck_file_path)
 				HoverHandler {cursorShape: Qt.PointingHandCursor}
 			}
 			RoundButton{
@@ -55,7 +55,7 @@ ListView{
 				icon.color: hovered ? mypalette.highlight : mypalette.buttonText
 				flat: true
 				display: AbstractButton.IconOnly
-				onClicked: onEdit(modelData.file_path)
+				onClicked: onEdit(modelData.deck_file_path)
 				HoverHandler {cursorShape: Qt.PointingHandCursor}
 			}
 			RoundButton{
@@ -65,7 +65,7 @@ ListView{
 				icon.color: hovered ? mypalette.highlight : mypalette.buttonText
 				flat: true
 				display: AbstractButton.IconOnly
-				onClicked: onStats(modelData.file_path)
+				onClicked: onStats(modelData.deck_file_path)
 				HoverHandler {cursorShape: Qt.PointingHandCursor}
 			}
 		}

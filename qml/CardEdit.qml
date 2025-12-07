@@ -11,8 +11,8 @@ Rectangle{
 	required property var updateAnswer
 	property string modifiedQuestion: questionTextArea.text
 	property string modifiedAnswer: answerTextArea.text
-
 	property bool revealed: false
+	property alias questionInput: questionTextArea
 
 	SystemPalette{
 		id: mypalette

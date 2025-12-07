@@ -137,7 +137,7 @@ void DeckModel::changeTitle(QString text)
 size_t DeckModel::addCard()
 {
 	beginInsertRows(QModelIndex(), m_size, m_size);
-	m_deck.addCard(Card());	
+	m_deck.addNewCard();
 	m_size = m_deck.size();
 	endInsertRows();
 	emit sizeChanged();

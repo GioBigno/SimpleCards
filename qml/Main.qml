@@ -1,5 +1,4 @@
 import QtQuick
-//import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
@@ -15,6 +14,8 @@ ApplicationWindow {
 	font.family: "Space Mono"
 
 	Component.onCompleted: {
+		DeckUtils.dataDir = AppConfig.decksDirectory
+
 		if(!AppConfig.rememberSize)
 			return;
 
@@ -28,16 +29,36 @@ ApplicationWindow {
 	}
 
 	onClosing: {
-		
 		if(!AppConfig.rememberSize)
 			return;
 
 		if(visibility === Window.Maximized){
 			AppConfig.windowMaximized = true;
-		}else{
+		}else if(visibility === Window.Windowed){
 			AppConfig.windowMaximized = false;
 			AppConfig.windowSize = Qt.size(width, height)
 		}
+	}
+
+	function toggleFullScreen(){
+		if(visibility === Window.FullScreen){
+			visibility = Window.Windowed
+		}else{
+			visibility = Window.FullScreen
+		}
+	}
+
+	Shortcut{
+		sequence: "F11"
+		context: Qt.ApplicationShortcut
+		onActivated: toggleFullScreen()
+	}
+
+	Shortcut{
+		sequence: "Esc"
+		context: Qt.ApplicationShortcut
+		enabled: root.visibility === Window.FullScreen
+		onActivated: toggleFullScreen()
 	}
 
 	SystemPalette{
@@ -69,33 +90,33 @@ ApplicationWindow {
 	Component{
 		id: decksList
 		DecksListView{
-			onOpen: (filePath) => {	
-				let error = DeckUtils.loadDeck(filePath, DeckMode.Test)
+			onOpen: (deckFilePath) => {	
+				let error = DeckUtils.loadDeck(deckFilePath, DeckMode.Test)
 				if(error===""){
 					stack.push(testingComponent)
 				}else{
 					loadingErrorDialog.informativeText = "Details:" + error
-					loadingErrorDialog.filePathToDelete = filePath
+					loadingErrorDialog.filePathToDelete = deckFilePath
 					loadingErrorDialog.open()
 				}
 			}
-			onEdit: (filePath) => {
-				let error = DeckUtils.loadDeck(filePath, DeckMode.Edit)
+			onEdit: (deckFilePath) => {
+				let error = DeckUtils.loadDeck(deckFilePath, DeckMode.Edit)
 				if(error===""){
 					stack.push(editingListComponent)
 				}else{
 					loadingErrorDialog.informativeText = "Details: " + error
-					loadingErrorDialog.filePathToDelete = filePath
+					loadingErrorDialog.filePathToDelete = deckFilePath
 					loadingErrorDialog.open()
 				}
 			}
-			onStats: (filePath) => {
-				let error = DeckUtils.loadDeck(filePath, DeckMode.Edit)
+			onStats: (deckFilePath) => {
+				let error = DeckUtils.loadDeck(deckFilePath, DeckMode.Edit)
 				if(error===""){
 					stack.push(statsComponent)
 				}else{
 					loadingErrorDialog.informativeText = "Details: " + error
-					loadingErrorDialog.filePathToDelete = filePath
+					loadingErrorDialog.filePathToDelete = deckFilePath
 					loadingErrorDialog.open()
 				}
 			}

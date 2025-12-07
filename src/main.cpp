@@ -1,6 +1,5 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QStandardPaths>
 #include <QFile>
 #include <QDir>
 #include <QJsonDocument>
@@ -13,11 +12,10 @@
 #include "deck.h"
 #include "appconfig.h"
 
-bool checkDataDir();
+bool checkDataDir(QDir dir);
 
 int main(int argc, char *argv[])
 {
-
 	QCoreApplication::setOrganizationName("BignoSoft");
 	QCoreApplication::setApplicationName("SimpleCards");
 	QCoreApplication::setApplicationVersion("1.0");	
@@ -27,16 +25,17 @@ int main(int argc, char *argv[])
 	QFontDatabase::addApplicationFont(":/qt/qml/simplecardsModule/assets/SpaceMono-Bold.ttf");
 	QFontDatabase::addApplicationFont(":/qt/qml/simplecardsModule/assets/SpaceMono-Italic.ttf");
 	
-	if(!checkDataDir()){
-		qCritical() << "[main] cannot use dataDir:" << QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+	AppConfig conf;
+	QDir dataDir = conf.getDecksDirectory().toLocalFile();
+
+	if(!checkDataDir(dataDir)){
+		qCritical() << "[main] cannot use dataDir:" << dataDir;
 		return -1;
 	}
-		
-	QSettings settings;
-	if(settings.value("utils/first_opening", true).toBool()){
-		settings.setValue("utils/first_opening", false);
-		QDir dataDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-		QFile::copy(":qt/qml/simplecardsModule/example_decks/Example.json", dataDir.absolutePath()+"/Example.json");
+	
+	if(conf.getFirstOpening()){
+		conf.setFirstOpening(false);
+		QFile::copy(":qt/qml/simplecardsModule/example_decks/Example.deck.json", dataDir.absolutePath()+"/Example.deck.json");
 	}
 
 	QQmlApplicationEngine engine;
@@ -50,11 +49,10 @@ int main(int argc, char *argv[])
 	return app.exec();
 }
 
-bool checkDataDir()
+bool checkDataDir(QDir dir)
 {
-	QDir dataDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
-	if (!dataDir.mkpath(dataDir.absolutePath())) {
-		qCritical() << "[main] Failed to create directory:" << dataDir;
+	if(!dir.mkpath(dir.absolutePath())){
+		qCritical() << "[main] Failed to create directory:" << dir;
 		return false;
 	}
 	return true;
