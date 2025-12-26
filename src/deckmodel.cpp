@@ -12,7 +12,7 @@ DeckModel::DeckModel(Deck deck, DeckMode mode, QObject *parent)
 		
 		//move all cards to review to the front
 		auto subrange = std::ranges::partition(temp, [](Card c){return c.toReview();});
-		m_size = std::ranges::distance(temp.cbegin(), subrange.cbegin());
+		m_size = std::ranges::distance(temp.begin(), subrange.begin());
 
 		//shuffle m_cards
 		static std::random_device rd;

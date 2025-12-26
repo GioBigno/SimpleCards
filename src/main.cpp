@@ -12,7 +12,14 @@
 #include "deck.h"
 #include "appconfig.h"
 
+#if defined Q_OS_WASM
+	#include <emscripten.h>
+	void loadFS_and_run_app(const QDir& dir);
+#endif
+
 bool checkDataDir(QDir dir);
+
+QQmlApplicationEngine* engine_ptr = nullptr;
 
 int main(int argc, char *argv[])
 {
@@ -39,15 +46,56 @@ int main(int argc, char *argv[])
 	}
 
 	QQmlApplicationEngine engine;
+	engine_ptr = &engine;
 	QObject::connect(
 		&engine,
 		&QQmlApplicationEngine::objectCreationFailed,
       	&app,
       	[]() { QCoreApplication::exit(-1); },
       	Qt::QueuedConnection);
+
+
+#if defined Q_OS_WASM
+	loadFS_and_run_app(dataDir);
+#else
 	engine.loadFromModule("simplecardsModule", "Main");
+#endif
+
 	return app.exec();
 }
+
+#if defined Q_OS_WASM
+void loadFS_and_run_app(const QDir& dir)
+{
+	const char* pathCStr = dir.absolutePath().toUtf8().constData();
+
+	EM_ASM_({
+		var path = UTF8ToString($0);
+		console.log("Mounting IDBFS at: " + path);
+		FS.mkdirTree(path);
+
+		// Mount the IDBFS (IndexedDB) to this specific folder
+		FS.mount(IDBFS, {}, path);
+
+		// Pull data from Database -> RAM
+		FS.syncfs(true, function (err) {
+			if(err)
+				console.log("Error loading DB: " + err);
+			else
+				console.log("FileSystem loaded successfully at " + path);
+			_fileSystemLoaded();
+		});
+	}, pathCStr);
+}
+
+extern "C" {
+	EMSCRIPTEN_KEEPALIVE
+	void fileSystemLoaded(){
+		qDebug() << "running app";
+		engine_ptr->loadFromModule("simplecardsModule", "Main");
+	}
+}
+#endif
 
 bool checkDataDir(QDir dir)
 {

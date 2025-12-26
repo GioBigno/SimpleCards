@@ -65,6 +65,10 @@ target_include_directories(simplecards
         ${CMAKE_CURRENT_SOURCE_DIR}/includes
 )
 
+if(wasm_project OR EMSCRIPTEN)
+    target_link_options(simplecards PRIVATE "-lidbfs.js")
+endif()
+
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
@@ -86,11 +90,13 @@ target_link_libraries(simplecards
 
 include(GNUInstallDirs)
 
-qt_generate_deploy_qml_app_script(
-    TARGET simplecards
-    OUTPUT_SCRIPT deploy_script
-)
-install(SCRIPT ${deploy_script})
+if(NOT(wasm_project OR EMSCRIPTEN))
+	qt_generate_deploy_qml_app_script(
+		TARGET simplecards
+		OUTPUT_SCRIPT deploy_script
+	)
+	install(SCRIPT ${deploy_script})
+endif()
 
 install(TARGETS simplecards
 	BUNDLE DESTINATION .

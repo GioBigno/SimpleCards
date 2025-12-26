@@ -10,7 +10,8 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 CMakeUserPresets.json
-compile.sh
+compile*.sh
 run.sh
 install.sh
 **/build/
+.cache/

@@ -6,6 +6,10 @@
 #include <map>
 #include <tuple>
 
+#if defined(Q_OS_WASM)
+	#include <emscripten.h>
+#endif
+
 DeckUtils::DeckUtils(QObject *parent)
     : QObject{parent}
 {}
@@ -114,6 +118,14 @@ void DeckUtils::deleteDeck(const QString& deckFilePath)
 	if(!QFile::moveToTrash(statsFilePath))
 		QFile::remove(statsFilePath);
 	emit availableDecksChanged();
+
+#if defined(Q_OS_WASM)
+	EM_ASM(
+		FS.syncfs(false, function (err) {
+			if(err)console.log("Error syncing FS: " + err);
+		});
+	);
+#endif
 }
 
 QString DeckUtils::createEmptyDeckFile()
@@ -161,6 +173,14 @@ void DeckUtils::changeLoadedDeckFileName(const QString& deckName)
 	m_deckFilePath = newDeckFilePath; 
 
 	QFile::rename(old_statsFilePath, new_statsFilePath);
+
+#if defined(Q_OS_WASM)
+	EM_ASM(
+		FS.syncfs(false, function (err) {
+			if(err)console.log("Error syncing FS: " + err);
+		});
+	);
+#endif
 }
 
 QString DeckUtils::statsFileNameFromDeckFileName(const QString& deckFileName)
@@ -202,7 +222,17 @@ bool DeckUtils::jsonToFile(const QJsonDocument& doc, const QString& fileName)
 	tempFile.close();
 
 	QFile::remove(fileName);
-	return QFile::rename(tempPath, fileName);
+	bool ret = QFile::rename(tempPath, fileName);
+
+#if defined(Q_OS_WASM)
+	EM_ASM(
+		FS.syncfs(false, function (err) {
+			if(err)console.log("Error syncing FS: " + err);
+		});
+	);
+#endif
+
+	return ret;
 }
 
 std::expected<Deck, QString> DeckUtils::deckFromJson(const QJsonDocument& jsonDoc)
