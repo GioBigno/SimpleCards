@@ -79,5 +79,12 @@ A demo is available [here](https://www.bignosoft.com/simplecards-demo/)
 
 </details>
 
+# Screenshots
+
+| | |
+| :---: | :---: |
+| ![App Screenshot](./screenshots/decks.png) | ![App Screenshot](./screenshots/cards.png) |
+| ![App Screenshot](./screenshots/retrieving.png) | ![App Screenshot](./screenshots/stats.png) |
+
 # Extra
 icons: https://www.svgrepo.com/collection/chunk-16px-thick-interface-icons
